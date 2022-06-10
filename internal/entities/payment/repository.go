@@ -87,3 +87,40 @@ func (r *Repository) GetStatus(ctx context.Context, paymentID int64) (string, er
 
 	return status, nil
 }
+
+func (r *Repository) GetPayments(ctx context.Context, input PaymentUser) ([]PaymentData, error) {
+	var arg string
+	var value interface{}
+
+	if input.UserEmail != "" && input.UserID == 0 {
+		arg = User_Email
+		value = input.UserEmail
+	}
+
+	if input.UserID != 0 && input.UserEmail == "" {
+		arg = User_ID
+		value = input.UserID
+	}
+
+	query := fmt.Sprintf(
+		`SELECT * from %s
+			WHERE %s = $1`,
+		Payments,
+		arg,
+	)
+
+	var output []PaymentData
+
+	err := r.db.SelectContext(
+		ctx,
+		&output,
+		query,
+		value,
+	)
+
+	if err != nil {
+		return []PaymentData{}, fmt.Errorf("Payment-Reposiroty-GetPayments, %s", err.Error())
+	}
+
+	return output, nil
+}

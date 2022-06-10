@@ -24,8 +24,8 @@ const (
 	CREATE                     = "/payment"
 	UPDATE_STATUS_BY_ID        = "/payments/{id}/status"
 	GET_STATUS_BY_ID           = "/payments/{id}/status"
-	GET_PAYMENTS_BY_USER_ID    = "/payments" // query /payments?user_id="..."
-	GET_PAYMENTS_BY_USER_EMAIL = "/payments" // query /payments?user_email="..."
+	GET_PAYMENTS_BY_USER_ID    = "/payments/user/{id}"
+	GET_PAYMENTS_BY_USER_EMAIL = "/payments/user" // query /payments/user?email=email
 	CANCEL_BY_ID               = "/payments/{id}"
 )
 
@@ -33,8 +33,8 @@ func (c *Controller) Register(router *mux.Router) {
 	router.HandleFunc(CREATE, c.createPayment).Methods(http.MethodPost)
 	router.HandleFunc(UPDATE_STATUS_BY_ID, c.updateStatus).Methods(http.MethodPut)
 	router.HandleFunc(GET_STATUS_BY_ID, c.getStatus).Methods(http.MethodGet)
-	// router.HandleFunc(GET_PAYMENTS_BY_USER_ID, s.getPaymentsByUserID).Methods(http.MethodGet)
-	// router.HandleFunc(GET_PAYMENTS_BY_USER_EMAIL, s.getPaymentsByUserEmail).Methods(http.MethodGet)
+	router.HandleFunc(GET_PAYMENTS_BY_USER_EMAIL, c.getPaymentsByUserEmail).Methods(http.MethodGet)
+	router.HandleFunc(GET_PAYMENTS_BY_USER_ID, c.getPaymentsByUserID).Methods(http.MethodGet)
 	// router.HandleFunc(CANCEL_BY_ID, s.cancelPayment).Methods(http.MethodDelete)
 }
 
@@ -120,43 +120,65 @@ func (c *Controller) getStatus(w http.ResponseWriter, r *http.Request) {
 	)
 }
 
-// func (p *PaymentHandler) getPaymentsByUserEmail(w http.ResponseWriter, r *http.Request) {
-// 	var input AccoutAddBalanceRequest
-// 	err := json.NewDecoder(r.Body).Decode(&input)
+func (c *Controller) getPaymentsByUserEmail(w http.ResponseWriter, r *http.Request) {
+	userEmail := r.URL.Query().Get("email")
 
-// 	if err != nil {
-// 		http.Error(w, err.Error(), http.StatusInternalServerError)
-// 		return
-// 	}
+	if userEmail == "" {
+		http.Error(w, "internal server error", http.StatusInternalServerError)
+		return
+	}
 
-// 	err = a.service.UpdateBalance(input.UserID, input.Amount)
-// 	if err != nil {
-// 		http.Error(w, err.Error(), http.StatusInternalServerError)
-// 		return
-// 	}
+	payments, err := c.usecase.GetPayments(
+		r.Context(),
+		PaymentUser{
+			UserEmail: userEmail,
+		},
+	)
 
-// 	w.Header().Set("Content-Type", "application/json")
-// 	w.WriteHeader(http.StatusOK)
-// }
+	if err != nil {
+		c.logger.Error(err)
+		http.Error(w, "internal server error", http.StatusInternalServerError)
+		return
+	}
 
-// func (p *PaymentHandler) getPaymentsByUserID(w http.ResponseWriter, r *http.Request) {
-// 	var input AccoutAddBalanceRequest
-// 	err := json.NewDecoder(r.Body).Decode(&input)
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(
+		PaymentsResonse{
+			Data: payments,
+		},
+	)
+}
 
-// 	if err != nil {
-// 		http.Error(w, err.Error(), http.StatusInternalServerError)
-// 		return
-// 	}
+func (c *Controller) getPaymentsByUserID(w http.ResponseWriter, r *http.Request) {
+	userID, err := getQueryId(r)
 
-// 	err = a.service.UpdateBalance(input.UserID, input.Amount)
-// 	if err != nil {
-// 		http.Error(w, err.Error(), http.StatusInternalServerError)
-// 		return
-// 	}
+	if err != nil {
+		http.Error(w, "internal server error", http.StatusInternalServerError)
+		return
+	}
 
-// 	w.Header().Set("Content-Type", "application/json")
-// 	w.WriteHeader(http.StatusOK)
-// }
+	payments, err := c.usecase.GetPayments(
+		r.Context(),
+		PaymentUser{
+			UserID: userID,
+		},
+	)
+
+	if err != nil {
+		c.logger.Error(err)
+		http.Error(w, "internal server error", http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(
+		PaymentsResonse{
+			Data: payments,
+		},
+	)
+}
 
 // func (p *PaymentHandler) cancelPayment(w http.ResponseWriter, r *http.Request) {
 // 	var input AccoutAddBalanceRequest

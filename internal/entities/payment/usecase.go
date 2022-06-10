@@ -74,3 +74,7 @@ func (u *Usecase) UpdateStatus(ctx context.Context, input PaymentStatus) error {
 func (u *Usecase) GetStatus(ctx context.Context, paymentID int64) (string, error) {
 	return u.repo.GetStatus(ctx, paymentID)
 }
+
+func (u *Usecase) GetPayments(ctx context.Context, input PaymentUser) ([]PaymentData, error) {
+	return u.repo.GetPayments(ctx, input)
+}
