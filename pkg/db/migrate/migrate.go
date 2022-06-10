@@ -19,7 +19,7 @@ func InitMigrate(logger loggin.ILogger, dsn string) {
 	}
 
 	if err := m.Up(); err != nil {
-		logger.Fatal(err)
+		logger.Debug(err)
 	}
 
 	m.Close()

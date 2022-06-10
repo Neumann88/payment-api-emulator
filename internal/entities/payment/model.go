@@ -7,10 +7,15 @@ type PaymentInput struct {
 	Amount    float64 `json:"amount"`
 }
 
-type PaymentResonse struct {
-	Status string `json:"status,omitempty"`
-	ID     int64  `json:"id,omitempty"`
+type PaymentIDResponse struct {
+	ID int64 `json:"id"`
 }
 
-type PaymentUserID int64
-type PaymentUserEmail string
+type PaymentStatusResponse struct {
+	Status string `json:"status"`
+}
+
+type PaymentStatus struct {
+	Status string `json:"status"`
+	ID     int64  `json:"id"`
+}

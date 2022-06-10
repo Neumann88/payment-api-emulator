@@ -22,8 +22,8 @@ func NewPaymentController(l loggin.ILogger, u PaymentUsecase) *Controller {
 
 const (
 	CREATE                     = "/payment"
-	GET_STATUS_BY_ID           = "/payments/{id}/status"
 	UPDATE_STATUS_BY_ID        = "/payments/{id}/status"
+	GET_STATUS_BY_ID           = "/payments/{id}/status"
 	GET_PAYMENTS_BY_USER_ID    = "/payments" // query /payments?user_id="..."
 	GET_PAYMENTS_BY_USER_EMAIL = "/payments" // query /payments?user_email="..."
 	CANCEL_BY_ID               = "/payments/{id}"
@@ -31,8 +31,8 @@ const (
 
 func (c *Controller) Register(router *mux.Router) {
 	router.HandleFunc(CREATE, c.createPayment).Methods(http.MethodPost)
-	// router.HandleFunc(GET_STATUS_BY_ID, s.getStatus).Methods(http.MethodGet)
-	// router.HandleFunc(UPDATE_STATUS_BY_ID, s.updateStatus).Methods(http.MethodPut)
+	router.HandleFunc(UPDATE_STATUS_BY_ID, c.updateStatus).Methods(http.MethodPut)
+	router.HandleFunc(GET_STATUS_BY_ID, c.getStatus).Methods(http.MethodGet)
 	// router.HandleFunc(GET_PAYMENTS_BY_USER_ID, s.getPaymentsByUserID).Methods(http.MethodGet)
 	// router.HandleFunc(GET_PAYMENTS_BY_USER_EMAIL, s.getPaymentsByUserEmail).Methods(http.MethodGet)
 	// router.HandleFunc(CANCEL_BY_ID, s.cancelPayment).Methods(http.MethodDelete)
@@ -43,7 +43,7 @@ func (c *Controller) createPayment(w http.ResponseWriter, r *http.Request) {
 	err := json.NewDecoder(r.Body).Decode(&input)
 
 	if err != nil {
-		c.logger.Errorf("Payment-Controller-CreatePayment, %s", err.Error())
+		c.logger.Errorf("Payment-Controller-createPayment, %s", err.Error())
 		http.Error(w, "internal server error", http.StatusInternalServerError)
 		return
 	}
@@ -57,46 +57,68 @@ func (c *Controller) createPayment(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusCreated)
-	json.NewEncoder(w).Encode(PaymentResonse{ID: id})
+	json.NewEncoder(w).Encode(
+		PaymentIDResponse{
+			ID: id,
+		},
+	)
 }
 
-// func (p *PaymentHandler) updateStatus(w http.ResponseWriter, r *http.Request) {
-// 	var input AccoutAddBalanceRequest
-// 	err := json.NewDecoder(r.Body).Decode(&input)
+func (c *Controller) updateStatus(w http.ResponseWriter, r *http.Request) {
+	var input PaymentStatus
 
-// 	if err != nil {
-// 		http.Error(w, err.Error(), http.StatusInternalServerError)
-// 		return
-// 	}
+	paymentID, err := getQueryId(r)
 
-// 	err = a.service.UpdateBalance(input.UserID, input.Amount)
-// 	if err != nil {
-// 		http.Error(w, err.Error(), http.StatusInternalServerError)
-// 		return
-// 	}
+	if err != nil {
+		c.logger.Errorf("Payment-Controller-updateStatus, %s", err.Error())
+		http.Error(w, "internal server error", http.StatusInternalServerError)
+		return
+	}
 
-// 	w.Header().Set("Content-Type", "application/json")
-// 	w.WriteHeader(http.StatusOK)
-// }
+	err = json.NewDecoder(r.Body).Decode(&input)
 
-// func (p *PaymentHandler) getStatus(w http.ResponseWriter, r *http.Request) {
-// 	var input AccoutAddBalanceRequest
-// 	err := json.NewDecoder(r.Body).Decode(&input)
+	if err != nil {
+		c.logger.Errorf("Payment-Controller-updateStatus, %s", err.Error())
+		http.Error(w, "internal server error", http.StatusInternalServerError)
+		return
+	}
 
-// 	if err != nil {
-// 		http.Error(w, err.Error(), http.StatusInternalServerError)
-// 		return
-// 	}
+	input.ID = paymentID
 
-// 	err = a.service.UpdateBalance(input.UserID, input.Amount)
-// 	if err != nil {
-// 		http.Error(w, err.Error(), http.StatusInternalServerError)
-// 		return
-// 	}
+	err = c.usecase.UpdateStatus(r.Context(), input)
+	if err != nil {
+		c.logger.Error(err)
+		http.Error(w, "internal server error", http.StatusInternalServerError)
+		return
+	}
 
-// 	w.Header().Set("Content-Type", "application/json")
-// 	w.WriteHeader(http.StatusOK)
-// }
+	w.WriteHeader(http.StatusOK)
+}
+
+func (c *Controller) getStatus(w http.ResponseWriter, r *http.Request) {
+	paymentID, err := getQueryId(r)
+
+	if err != nil {
+		c.logger.Errorf("Payment-Controller-getStatus, %s", err.Error())
+		http.Error(w, "internal server error", http.StatusInternalServerError)
+		return
+	}
+
+	status, err := c.usecase.GetStatus(r.Context(), paymentID)
+	if err != nil {
+		c.logger.Error(err)
+		http.Error(w, "internal server error", http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(
+		PaymentStatusResponse{
+			Status: status,
+		},
+	)
+}
 
 // func (p *PaymentHandler) getPaymentsByUserEmail(w http.ResponseWriter, r *http.Request) {
 // 	var input AccoutAddBalanceRequest

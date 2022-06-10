@@ -9,7 +9,7 @@ CREATE TABLE IF NOT EXISTS payments (
     amount decimal(12, 2) NOT NULL CHECK(amount > 0) DEFAULT 0,
     created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
-    transaction_status valid_status NOT NULL DEFAULT 'new'
+    status valid_status NOT NULL DEFAULT 'new'
 );
 
 CREATE INDEX ON payments(user_email);
