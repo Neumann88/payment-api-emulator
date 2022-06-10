@@ -1,0 +1,12 @@
+{"level":"fatal","time":"10-06-2022,21:11:21","caller":"runtime/proc.go:250","message":"postgres connection failed, dial tcp 127.0.0.1:5432: connect: connection refused"}
+{"level":"fatal","time":"10-06-2022,21:11:59","caller":"app/main.go:33","message":"postgres connection failed, dial tcp 127.0.0.1:5432: connect: connection refused"}
+{"level":"fatal","time":"10-06-2022,21:37:23","caller":"app/main.go:33","message":"postgres connection failed, dial tcp 127.0.0.1:5432: connect: connection refused"}
+{"level":"fatal","time":"10-06-2022,21:46:33","caller":"app/main.go:33","message":"postgres connection failed, pq: SSL is not enabled on the server"}
+{"level":"fatal","time":"10-06-2022,21:46:41","caller":"app/main.go:33","message":"postgres connection failed, pq: SSL is not enabled on the server"}
+{"level":"fatal","time":"10-06-2022,21:47:12","caller":"app/main.go:34","message":"postgres connection failed, pq: SSL is not enabled on the server"}
+{"level":"fatal","time":"10-06-2022,21:48:16","caller":"app/main.go:34","message":"postgres connection failed, pq: SSL is not enabled on the server"}
+{"level":"fatal","time":"10-06-2022,21:50:35","caller":"app/main.go:34","message":"postgres connection failed, pq: SSL is not enabled on the server"}
+{"level":"info","time":"10-06-2022,21:51:53","caller":"migrate/migrate.go:22","message":"first .: file does not exist"}
+{"level":"info","time":"10-06-2022,21:51:53","caller":"app/main.go:60","message":"http server created and started at http://localhost:8080"}
+{"level":"info","time":"10-06-2022,21:52:19","caller":"app/main.go:68","message":"app - run - signal: interrupt"}
+{"level":"error","time":"10-06-2022,21:52:19","caller":"app/main.go:76","message":"app - run - httpServer.Shutdown: context deadline exceeded"}
