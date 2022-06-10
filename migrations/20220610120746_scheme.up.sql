@@ -2,14 +2,14 @@ CREATE TYPE valid_status AS ENUM('new', 'success', 'failure', 'error');
 CREATE TYPE valid_currency AS ENUM('usd', 'eur', 'rub');
 
 CREATE TABLE IF NOT EXISTS payments (
-  id SERIAL PRIMARY KEY,
-  user_id INT NOT NULL,
-  user_email VARCHAR(20) NOT NULL,
-  amount NUMERIC(10, 2) NOT NULL CHECK(amount > 0),
-  currency valid_currency NOT NULL,
-  created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
-  updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
-  transaction_status valid_status NOT NULL DEFAULT 'new'
+    id SERIAL PRIMARY KEY,
+    user_id INT NOT NULL,
+    user_email VARCHAR(20) NOT NULL,
+    currency valid_currency NOT NULL,
+    amount decimal(12, 2) NOT NULL CHECK(amount > 0) DEFAULT 0,
+    created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
+    transaction_status valid_status NOT NULL DEFAULT 'new'
 );
 
 CREATE INDEX ON payments(user_email);

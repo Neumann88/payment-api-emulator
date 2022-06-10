@@ -2,19 +2,19 @@ package main
 
 import (
 	"log"
-	"net/http"
 	"os"
 	"os/signal"
 	"syscall"
 	"time"
 
 	"github.com/Neumann88/payment-api-emulator/config"
+	"github.com/Neumann88/payment-api-emulator/internal/controller"
+	"github.com/Neumann88/payment-api-emulator/internal/repository"
+	"github.com/Neumann88/payment-api-emulator/internal/usecase"
 	"github.com/Neumann88/payment-api-emulator/pkg/db/migrate"
 	"github.com/Neumann88/payment-api-emulator/pkg/db/postgres"
 	"github.com/Neumann88/payment-api-emulator/pkg/http/server"
 	"github.com/Neumann88/payment-api-emulator/pkg/loggin"
-
-	"github.com/gorilla/mux"
 )
 
 func main() {
@@ -37,20 +37,14 @@ func main() {
 	// Scheme migrate
 	migrate.InitMigrate(logger, cfg.Postgres.Dsn)
 
-	// Entities
-	// repos := repository.NewRepository(pg)
-	// services := service.NewService(repos)
-	// handlers := handler.NewHandler(services)
-
-	h := mux.NewRouter()
-
-	h.HandleFunc("/home", func(w http.ResponseWriter, r *http.Request) {
-		w.Write([]byte("hello world"))
-	})
+	// Layers
+	r := repository.NewRepository(logger, pg)
+	u := usecase.NewUsecase(r)
+	h := controller.NewController(u)
 
 	// HTTP-Server
 	httpServer := server.NewHttpServer(
-		h,
+		h.InitRoutes(),
 		cfg.HTTP.Port,
 		time.Duration(cfg.HTTP.ReadTimeout),
 		time.Duration(cfg.HTTP.WriteTimeout),
