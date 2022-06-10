@@ -27,3 +27,35 @@
 {"level":"info","time":"11-06-2022,00:10:15","caller":"app/main.go:59","message":"http server created and started at http://localhost:8080"}
 {"level":"info","time":"11-06-2022,00:13:50","caller":"app/main.go:67","message":"app - run - signal: interrupt"}
 {"level":"error","time":"11-06-2022,00:13:50","caller":"app/main.go:75","message":"app - run - httpServer.Shutdown: context deadline exceeded"}
+{"level":"fatal","time":"11-06-2022,03:15:05","caller":"app/main.go:33","message":"postgres connection failed, dial tcp 127.0.0.1:5432: connect: connection refused"}
+{"level":"fatal","time":"11-06-2022,03:15:16","caller":"migrate/migrate.go:22","message":"no change"}
+{"level":"fatal","time":"11-06-2022,03:15:20","caller":"migrate/migrate.go:22","message":"no change"}
+{"level":"info","time":"11-06-2022,03:15:38","caller":"app/main.go:53","message":"http server created and started at http://localhost:8080"}
+{"level":"info","time":"11-06-2022,03:24:50","caller":"app/main.go:61","message":"app - run - signal: interrupt"}
+{"level":"error","time":"11-06-2022,03:24:50","caller":"app/main.go:69","message":"app - run - httpServer.Shutdown: context deadline exceeded"}
+{"level":"info","time":"11-06-2022,03:24:58","caller":"app/main.go:53","message":"http server created and started at http://localhost:8080"}
+{"level":"info","time":"11-06-2022,03:28:09","caller":"app/main.go:61","message":"app - run - signal: interrupt"}
+{"level":"error","time":"11-06-2022,03:28:09","caller":"app/main.go:69","message":"app - run - httpServer.Shutdown: context deadline exceeded"}
+{"level":"info","time":"11-06-2022,03:28:23","caller":"app/main.go:53","message":"http server created and started at http://localhost:8080"}
+{"level":"info","time":"11-06-2022,03:28:55","caller":"app/main.go:61","message":"app - run - signal: interrupt"}
+{"level":"error","time":"11-06-2022,03:28:55","caller":"app/main.go:69","message":"app - run - httpServer.Shutdown: context deadline exceeded"}
+{"level":"info","time":"11-06-2022,03:29:09","caller":"app/main.go:53","message":"http server created and started at http://localhost:8080"}
+{"level":"info","time":"11-06-2022,03:29:40","caller":"app/main.go:61","message":"app - run - signal: interrupt"}
+{"level":"error","time":"11-06-2022,03:29:40","caller":"app/main.go:69","message":"app - run - httpServer.Shutdown: context deadline exceeded"}
+{"level":"fatal","time":"11-06-2022,03:35:17","caller":"migrate/migrate.go:22","message":"no change"}
+{"level":"info","time":"11-06-2022,03:35:26","caller":"app/main.go:53","message":"http server created and started at http://localhost:8080"}
+{"level":"error","time":"11-06-2022,03:35:53","caller":"payment/controller.go:53","message":"Payment-Repository-CreatePayment, pq: new row for relation \"payments\" violates check constraint \"payments_amount_check\""}
+{"level":"info","time":"11-06-2022,03:38:05","caller":"app/main.go:61","message":"app - run - signal: interrupt"}
+{"level":"info","time":"11-06-2022,03:38:15","caller":"app/main.go:53","message":"http server created and started at http://localhost:8080"}
+{"level":"error","time":"11-06-2022,03:38:19","caller":"payment/controller.go:53","message":"Payment-Repository-CreatePayment, pq: new row for relation \"payments\" violates check constraint \"payments_amount_check\""}
+{"level":"info","time":"11-06-2022,03:38:49","caller":"app/main.go:61","message":"app - run - signal: interrupt"}
+{"level":"info","time":"11-06-2022,03:38:57","caller":"app/main.go:53","message":"http server created and started at http://localhost:8080"}
+{"level":"error","time":"11-06-2022,03:38:59","caller":"payment/controller.go:53","message":"Payment-Repository-CreatePayment, pq: new row for relation \"payments\" violates check constraint \"payments_amount_check\""}
+{"level":"info","time":"11-06-2022,03:39:27","caller":"app/main.go:61","message":"app - run - signal: interrupt"}
+{"level":"fatal","time":"11-06-2022,03:39:32","caller":"migrate/migrate.go:22","message":"no change"}
+{"level":"info","time":"11-06-2022,03:39:52","caller":"app/main.go:53","message":"http server created and started at http://localhost:8080"}
+{"level":"info","time":"11-06-2022,03:40:03","caller":"app/main.go:61","message":"app - run - signal: interrupt"}
+{"level":"info","time":"11-06-2022,03:49:42","caller":"app/main.go:53","message":"http server created and started at http://localhost:8080"}
+{"level":"info","time":"11-06-2022,03:51:23","caller":"app/main.go:61","message":"app - run - signal: interrupt"}
+{"level":"info","time":"11-06-2022,03:51:35","caller":"app/main.go:53","message":"http server created and started at http://localhost:8080"}
+{"level":"info","time":"11-06-2022,03:51:56","caller":"app/main.go:61","message":"app - run - signal: interrupt"}

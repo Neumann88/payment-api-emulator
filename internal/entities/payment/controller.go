@@ -4,26 +4,29 @@ import (
 	"encoding/json"
 	"net/http"
 
+	"github.com/Neumann88/payment-api-emulator/pkg/loggin"
 	"github.com/gorilla/mux"
 )
 
 type Controller struct {
 	usecase PaymentUsecase
+	logger  loggin.ILogger
 }
 
-func NewPaymentController(u PaymentUsecase) *Controller {
+func NewPaymentController(l loggin.ILogger, u PaymentUsecase) *Controller {
 	return &Controller{
+		logger:  l,
 		usecase: u,
 	}
 }
 
 const (
 	CREATE                     = "/payment"
-	GET_STATUS_BY_ID           = "/payment/{id}/status"
-	UPDATE_STATUS_BY_ID        = "/payment/{id}/status"
+	GET_STATUS_BY_ID           = "/payments/{id}/status"
+	UPDATE_STATUS_BY_ID        = "/payments/{id}/status"
 	GET_PAYMENTS_BY_USER_ID    = "/payments" // query /payments?user_id="..."
 	GET_PAYMENTS_BY_USER_EMAIL = "/payments" // query /payments?user_email="..."
-	CANCEL_BY_ID               = "/payment/{id}"
+	CANCEL_BY_ID               = "/payments/{id}"
 )
 
 func (c *Controller) Register(router *mux.Router) {
@@ -36,23 +39,25 @@ func (c *Controller) Register(router *mux.Router) {
 }
 
 func (c *Controller) createPayment(w http.ResponseWriter, r *http.Request) {
-	var input Payment
+	var input PaymentInput
 	err := json.NewDecoder(r.Body).Decode(&input)
 
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		c.logger.Errorf("Payment-Controller-CreatePayment, %s", err.Error())
+		http.Error(w, "internal server error", http.StatusInternalServerError)
 		return
 	}
 
-	id, err := c.usecase.createPayment(r.Context(), input)
+	id, err := c.usecase.CreatePayment(r.Context(), input)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		c.logger.Error(err)
+		http.Error(w, "internal server error", http.StatusInternalServerError)
 		return
 	}
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusCreated)
-	json.NewEncoder(w).Encode(map[string]int64{"id": id})
+	json.NewEncoder(w).Encode(PaymentResonse{ID: id})
 }
 
 // func (p *PaymentHandler) updateStatus(w http.ResponseWriter, r *http.Request) {

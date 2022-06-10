@@ -1,12 +1,16 @@
 package payment
 
-type Payment struct {
-	ID                int64   `json:"id"`
-	UserID            int64   `json:"user_id"`
-	UserEmail         string  `json:"user_email"`
-	Amount            float64 `json:"amout"`
-	Currency          string  `json:"currency"`
-	CreatedAt         string  `json:"created_at"`
-	UpdatedAt         string  `json:"updated_at"`
-	TransactionStatus string  `json:"transaction_status"`
+type PaymentInput struct {
+	UserEmail string  `json:"user_email"`
+	Currency  string  `json:"currency"`
+	UserID    int64   `json:"user_id"`
+	Amount    float64 `json:"amount"`
 }
+
+type PaymentResonse struct {
+	Status string `json:"status,omitempty"`
+	ID     int64  `json:"id,omitempty"`
+}
+
+type PaymentUserID int64
+type PaymentUserEmail string

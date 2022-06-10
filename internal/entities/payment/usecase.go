@@ -12,6 +12,6 @@ func NewPaymentUsecase(r PaymentRepository) *Usecase {
 	}
 }
 
-func (a *Usecase) createPayment(ctx context.Context, input Payment) (int64, error) {
-	return a.repo.createPayment(ctx, input)
+func (a *Usecase) CreatePayment(ctx context.Context, input PaymentInput) (int64, error) {
+	return a.repo.CreatePayment(ctx, input)
 }

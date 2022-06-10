@@ -38,9 +38,9 @@ func main() {
 	migrate.InitMigrate(logger, cfg.Postgres.Dsn)
 
 	// Layers
-	r := repository.NewRepository(logger, pg)
+	r := repository.NewRepository(pg)
 	u := usecase.NewUsecase(r)
-	h := controller.NewController(u)
+	h := controller.NewController(logger, u)
 
 	// HTTP-Server
 	httpServer := server.NewHttpServer(

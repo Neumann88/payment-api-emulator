@@ -7,11 +7,11 @@ import (
 )
 
 type PaymentRepository interface {
-	createPayment(ctx context.Context, input Payment) (int64, error)
+	CreatePayment(ctx context.Context, input PaymentInput) (int64, error)
 }
 
 type PaymentUsecase interface {
-	createPayment(ctx context.Context, input Payment) (int64, error)
+	CreatePayment(ctx context.Context, input PaymentInput) (int64, error)
 }
 
 type PaymentController interface {
