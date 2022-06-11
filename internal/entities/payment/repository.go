@@ -81,7 +81,7 @@ func (r *Repository) GetStatus(ctx context.Context, paymentID int64) (string, er
 
 	var status string
 	if err := rows.Scan(&status); err != nil {
-		return "", fmt.Errorf("Payment-Reposiroty-GetStatusByID, %s", err.Error())
+		return "", fmt.Errorf("Payment-Reposiroty-GetStatus, %s", err.Error())
 	}
 
 	return status, nil
@@ -131,7 +131,7 @@ func (r *Repository) GetPayments(ctx context.Context, input PaymentUser) ([]Paym
 			&value.Currency,
 			&value.Amount,
 			&value.CreatedAt,
-			&value.UreatedAt,
+			&value.UpdatedAt,
 			&value.Status,
 		)
 
@@ -153,7 +153,8 @@ func (r *Repository) GetPayments(ctx context.Context, input PaymentUser) ([]Paym
 func (r *Repository) CancelPayment(ctx context.Context, paymentID int64) (int64, error) {
 	query := fmt.Sprintf(
 		`DELETE FROM %s
-			WHERE id = $1 AND status NOT IN ($2, $3)`,
+			WHERE id = $1
+				AND status NOT IN ($2, $3)`,
 		Payments,
 	)
 
