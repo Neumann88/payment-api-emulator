@@ -25,17 +25,23 @@ func main() {
 	}
 
 	// Logger
-	logger := loggin.NewLogger().Init(cfg.Logger.Debug)
+	logger := loggin.NewLogger()
+	logger.Init(cfg.Logger.Debug)
 
 	// Database
-	pg, err := postgres.NewPostgres().Connect(cfg.Postgres.Dsn)
+	db := postgres.NewPostgres()
+	pg, err := db.Connect(cfg.Postgres.Dsn)
+
 	if err != nil {
 		logger.Fatalf("postgres connection failed, %s", err.Error())
 	}
 	defer pg.Close()
 
 	// Scheme migrate
-	migrate.InitMigrate(logger, cfg.Postgres.Dsn)
+	migrate.InitMigrate(
+		logger,
+		cfg.Postgres.Dsn,
+	)
 
 	// Layers
 	r := repository.NewRepository(pg)
@@ -50,6 +56,7 @@ func main() {
 		time.Duration(cfg.HTTP.WriteTimeout),
 		time.Duration(cfg.HTTP.ShutdownTimeout),
 	)
+
 	logger.Infof("http server created and started at http://localhost:%s", cfg.HTTP.Port)
 
 	// Waiting signal

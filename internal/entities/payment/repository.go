@@ -2,16 +2,15 @@ package payment
 
 import (
 	"context"
+	"database/sql"
 	"fmt"
-
-	"github.com/jmoiron/sqlx"
 )
 
 type Repository struct {
-	db *sqlx.DB
+	db *sql.DB
 }
 
-func NewPaymentRepository(db *sqlx.DB) *Repository {
+func NewPaymentRepository(db *sql.DB) *Repository {
 	return &Repository{
 		db: db,
 	}
@@ -88,7 +87,7 @@ func (r *Repository) GetStatus(ctx context.Context, paymentID int64) (string, er
 	return status, nil
 }
 
-func (r *Repository) GetPayments(ctx context.Context, input PaymentUser) ([]PaymentData, error) {
+func (r *Repository) GetPayments(ctx context.Context, input PaymentUser) ([]Payment, error) {
 	var arg string
 	var value interface{}
 
@@ -109,18 +108,66 @@ func (r *Repository) GetPayments(ctx context.Context, input PaymentUser) ([]Paym
 		arg,
 	)
 
-	var output []PaymentData
-
-	err := r.db.SelectContext(
+	rows, err := r.db.QueryContext(
 		ctx,
-		&output,
 		query,
 		value,
 	)
 
 	if err != nil {
-		return []PaymentData{}, fmt.Errorf("Payment-Reposiroty-GetPayments, %s", err.Error())
+		return []Payment{}, fmt.Errorf("Payment-Reposiroty-GetPayments, %s", err.Error())
+	}
+
+	defer rows.Close()
+
+	var output []Payment
+	for rows.Next() {
+		value := Payment{}
+
+		err := rows.Scan(
+			&value.ID,
+			&value.UserID,
+			&value.UserEmail,
+			&value.Currency,
+			&value.Amount,
+			&value.CreatedAt,
+			&value.UreatedAt,
+			&value.Status,
+		)
+
+		if err != nil {
+			return []Payment{}, fmt.Errorf("Payment-Reposiroty-GetPayments, %s", err.Error())
+		}
+
+		output = append(output, value)
+	}
+
+	err = rows.Err()
+	if err != nil {
+		return []Payment{}, fmt.Errorf("Payment-Reposiroty-GetPayments, %s", err.Error())
 	}
 
 	return output, nil
+}
+
+func (r *Repository) CancelPayment(ctx context.Context, paymentID int64) (int64, error) {
+	query := fmt.Sprintf(
+		`DELETE FROM %s
+			WHERE id = $1 AND status NOT IN ($2, $3)`,
+		Payments,
+	)
+
+	rows, err := r.db.ExecContext(
+		ctx,
+		query,
+		paymentID,
+		StatusSuccess,
+		StatusFailure,
+	)
+
+	if err != nil {
+		return 0, fmt.Errorf("Payment-Repository-CancelPayment, %s", err.Error())
+	}
+
+	return rows.RowsAffected()
 }

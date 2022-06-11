@@ -35,7 +35,7 @@ func (c *Controller) Register(router *mux.Router) {
 	router.HandleFunc(GET_STATUS_BY_ID, c.getStatus).Methods(http.MethodGet)
 	router.HandleFunc(GET_PAYMENTS_BY_USER_EMAIL, c.getPaymentsByUserEmail).Methods(http.MethodGet)
 	router.HandleFunc(GET_PAYMENTS_BY_USER_ID, c.getPaymentsByUserID).Methods(http.MethodGet)
-	// router.HandleFunc(CANCEL_BY_ID, s.cancelPayment).Methods(http.MethodDelete)
+	router.HandleFunc(CANCEL_BY_ID, c.cancelPayment).Methods(http.MethodDelete)
 }
 
 func (c *Controller) createPayment(w http.ResponseWriter, r *http.Request) {
@@ -48,7 +48,11 @@ func (c *Controller) createPayment(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	id, err := c.usecase.CreatePayment(r.Context(), input)
+	id, err := c.usecase.CreatePayment(
+		r.Context(),
+		input,
+	)
+
 	if err != nil {
 		c.logger.Error(err)
 		http.Error(w, "internal server error", http.StatusInternalServerError)
@@ -85,7 +89,11 @@ func (c *Controller) updateStatus(w http.ResponseWriter, r *http.Request) {
 
 	input.ID = paymentID
 
-	err = c.usecase.UpdateStatus(r.Context(), input)
+	err = c.usecase.UpdateStatus(
+		r.Context(),
+		input,
+	)
+
 	if err != nil {
 		c.logger.Error(err)
 		http.Error(w, "internal server error", http.StatusInternalServerError)
@@ -104,7 +112,11 @@ func (c *Controller) getStatus(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	status, err := c.usecase.GetStatus(r.Context(), paymentID)
+	status, err := c.usecase.GetStatus(
+		r.Context(),
+		paymentID,
+	)
+
 	if err != nil {
 		c.logger.Error(err)
 		http.Error(w, "internal server error", http.StatusInternalServerError)
@@ -180,21 +192,25 @@ func (c *Controller) getPaymentsByUserID(w http.ResponseWriter, r *http.Request)
 	)
 }
 
-// func (p *PaymentHandler) cancelPayment(w http.ResponseWriter, r *http.Request) {
-// 	var input AccoutAddBalanceRequest
-// 	err := json.NewDecoder(r.Body).Decode(&input)
+func (c *Controller) cancelPayment(w http.ResponseWriter, r *http.Request) {
+	paymentID, err := getQueryId(r)
 
-// 	if err != nil {
-// 		http.Error(w, err.Error(), http.StatusInternalServerError)
-// 		return
-// 	}
+	if err != nil {
+		http.Error(w, "internal server error", http.StatusInternalServerError)
+		return
+	}
 
-// 	err = a.service.UpdateBalance(input.UserID, input.Amount)
-// 	if err != nil {
-// 		http.Error(w, err.Error(), http.StatusInternalServerError)
-// 		return
-// 	}
+	err = c.usecase.CancelPayment(
+		r.Context(),
+		paymentID,
+	)
 
-// 	w.Header().Set("Content-Type", "application/json")
-// 	w.WriteHeader(http.StatusOK)
-// }
+	if err != nil {
+		c.logger.Error(err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+}

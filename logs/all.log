@@ -100,3 +100,39 @@
 {"level":"debug","time":"11-06-2022,08:27:28","caller":"migrate/migrate.go:22","message":"no change"}
 {"level":"info","time":"11-06-2022,08:27:28","caller":"app/main.go:53","message":"http server created and started at http://localhost:8080"}
 {"level":"info","time":"11-06-2022,08:27:36","caller":"app/main.go:61","message":"app - run - signal: interrupt"}
+{"level":"debug","time":"12-06-2022,05:27:13","caller":"loggin/loggin.go:71","message":"no change"}
+{"level":"info","time":"12-06-2022,05:27:13","caller":"loggin/loggin.go:75","message":"http server created and started at http://localhost:8080"}
+{"level":"error","time":"12-06-2022,05:28:31","caller":"loggin/loggin.go:95","message":"Payment-Reposiroty-GetPayments, sql: expected 8 destination arguments in Scan, not 1"}
+{"level":"info","time":"12-06-2022,05:30:14","caller":"loggin/loggin.go:75","message":"app - run - signal: interrupt"}
+{"level":"debug","time":"12-06-2022,05:30:15","caller":"loggin/loggin.go:71","message":"no change"}
+{"level":"info","time":"12-06-2022,05:30:15","caller":"loggin/loggin.go:75","message":"http server created and started at http://localhost:8080"}
+{"level":"error","time":"12-06-2022,05:30:18","caller":"loggin/loggin.go:95","message":"Payment-Reposiroty-GetPayments, sql: expected 8 destination arguments in Scan, not 1"}
+{"level":"info","time":"12-06-2022,05:31:06","caller":"loggin/loggin.go:75","message":"app - run - signal: interrupt"}
+{"level":"debug","time":"12-06-2022,05:32:35","caller":"loggin/loggin.go:71","message":"no change"}
+{"level":"info","time":"12-06-2022,05:32:35","caller":"loggin/loggin.go:75","message":"http server created and started at http://localhost:8080"}
+{"level":"error","time":"12-06-2022,05:32:37","caller":"loggin/loggin.go:95","message":"Payment-Reposiroty-GetPayments, sql: expected 8 destination arguments in Scan, not 1"}
+{"level":"info","time":"12-06-2022,05:34:36","caller":"loggin/loggin.go:75","message":"app - run - signal: interrupt"}
+{"level":"debug","time":"12-06-2022,05:34:37","caller":"loggin/loggin.go:71","message":"no change"}
+{"level":"info","time":"12-06-2022,05:34:37","caller":"loggin/loggin.go:75","message":"http server created and started at http://localhost:8080"}
+{"level":"info","time":"12-06-2022,05:35:52","caller":"loggin/loggin.go:75","message":"app - run - signal: interrupt"}
+{"level":"info","time":"12-06-2022,05:37:56","caller":"loggin/loggin.go:75","message":"http server created and started at http://localhost:8080"}
+{"level":"info","time":"12-06-2022,05:57:17","caller":"loggin/loggin.go:75","message":"http server created and started at http://localhost:8080"}
+{"level":"error","time":"12-06-2022,05:57:27","caller":"loggin/loggin.go:95","message":"Payment-Repository-CreatePayment, pq: column \"id\" does not exist"}
+{"level":"info","time":"12-06-2022,05:58:06","caller":"loggin/loggin.go:75","message":"app - run - signal: interrupt"}
+{"level":"info","time":"12-06-2022,05:58:07","caller":"loggin/loggin.go:75","message":"http server created and started at http://localhost:8080"}
+{"level":"error","time":"12-06-2022,05:58:09","caller":"loggin/loggin.go:95","message":"Payment-Repository-CreatePayment, sql: no rows in result set"}
+{"level":"info","time":"12-06-2022,05:58:43","caller":"loggin/loggin.go:75","message":"app - run - signal: interrupt"}
+{"level":"info","time":"12-06-2022,05:58:44","caller":"loggin/loggin.go:75","message":"http server created and started at http://localhost:8080"}
+{"level":"info","time":"12-06-2022,05:59:36","caller":"loggin/loggin.go:75","message":"app - run - signal: interrupt"}
+{"level":"info","time":"12-06-2022,05:59:38","caller":"loggin/loggin.go:75","message":"http server created and started at http://localhost:8080"}
+{"level":"info","time":"12-06-2022,06:00:47","caller":"loggin/loggin.go:75","message":"app - run - signal: interrupt"}
+{"level":"info","time":"12-06-2022,06:00:48","caller":"loggin/loggin.go:75","message":"http server created and started at http://localhost:8080"}
+{"level":"error","time":"12-06-2022,06:00:53","caller":"loggin/loggin.go:95","message":"Payment-Repository-CreatePayment, pq: column \"id\" does not exist"}
+{"level":"info","time":"12-06-2022,06:01:05","caller":"loggin/loggin.go:75","message":"app - run - signal: interrupt"}
+{"level":"info","time":"12-06-2022,06:01:16","caller":"loggin/loggin.go:75","message":"http server created and started at http://localhost:8080"}
+{"level":"info","time":"12-06-2022,06:02:02","caller":"loggin/loggin.go:75","message":"app - run - signal: interrupt"}
+{"level":"info","time":"12-06-2022,06:08:00","caller":"zap@v1.21.0/sugar.go:138","message":"http server created and started at http://localhost:8080"}
+{"level":"info","time":"12-06-2022,06:08:15","caller":"zap@v1.21.0/sugar.go:138","message":"app - run - signal: interrupt"}
+{"level":"info","time":"12-06-2022,06:08:17","caller":"app/main.go:60","message":"http server created and started at http://localhost:8080"}
+{"level":"error","time":"12-06-2022,06:08:46","caller":"payment/controller.go:90","message":"Payment-Usecase-Repository-GetStatus Payment-Reposiroty-GetStatusByID, sql: no rows in result set"}
+{"level":"info","time":"12-06-2022,06:14:32","caller":"app/main.go:68","message":"app - run - signal: interrupt"}

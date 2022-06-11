@@ -12,7 +12,7 @@ type PaymentUser struct {
 	UserEmail string `json:"user_email"`
 }
 
-type PaymentData struct {
+type Payment struct {
 	ID        int64   `json:"id" db:"id"`
 	UserID    int64   `json:"user_id" db:"user_id"`
 	Amount    float64 `json:"amount" db:"amount"`
@@ -24,7 +24,7 @@ type PaymentData struct {
 }
 
 type PaymentsResonse struct {
-	Data []PaymentData `json:"data"`
+	Data []Payment `json:"data"`
 }
 
 type PaymentIDResponse struct {

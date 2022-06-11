@@ -1,13 +1,18 @@
 package postgres
 
 import (
-	"github.com/jmoiron/sqlx"
+	"database/sql"
 )
 
 type postgres struct{}
 
-func (p *postgres) Connect(dsn string) (*sqlx.DB, error) {
-	db, err := sqlx.Open("postgres", dsn)
+func NewPostgres() *postgres {
+	return &postgres{}
+}
+
+func (p *postgres) Connect(dsn string) (*sql.DB, error) {
+	db, err := sql.Open("postgres", dsn)
+
 	if err != nil {
 		return nil, err
 	}
@@ -18,8 +23,4 @@ func (p *postgres) Connect(dsn string) (*sqlx.DB, error) {
 	}
 
 	return db, err
-}
-
-func NewPostgres() *postgres {
-	return &postgres{}
 }

@@ -1,6 +1,7 @@
 package payment
 
 import (
+	"errors"
 	"net/http"
 	"strconv"
 
@@ -25,4 +26,12 @@ func converteIDtoI64(id string) (int64, error) {
 		return 0, err
 	}
 	return int64(convertedID), nil
+}
+
+func checkTerminalStatusRow(row int64) error {
+	if row == 0 {
+		return errors.New("terminal status")
+	}
+
+	return nil
 }

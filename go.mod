@@ -6,7 +6,6 @@ require (
 	github.com/golang-migrate/migrate/v4 v4.15.2
 	github.com/gorilla/mux v1.7.4
 	github.com/ilyakaznacheev/cleanenv v1.3.0
-	github.com/jmoiron/sqlx v1.3.1
 	go.uber.org/zap v1.21.0
 )
 

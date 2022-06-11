@@ -5,6 +5,6 @@ http:
   shutdownTimeout: 3
 
 logger:
-  debug: true
+  debug: false
 
 
