@@ -29,13 +29,14 @@ const (
 	CANCEL_BY_ID               = "/payments/{id}"
 )
 
-func (c *Controller) Register(router *mux.Router) {
+func (c *Controller) Register(router *mux.Router) *mux.Router {
 	router.HandleFunc(CREATE, c.createPayment).Methods(http.MethodPost)
 	router.HandleFunc(UPDATE_STATUS_BY_ID, c.updateStatus).Methods(http.MethodPut)
 	router.HandleFunc(GET_STATUS_BY_ID, c.getStatus).Methods(http.MethodGet)
 	router.HandleFunc(GET_PAYMENTS_BY_USER_EMAIL, c.getPaymentsByUserEmail).Methods(http.MethodGet)
 	router.HandleFunc(GET_PAYMENTS_BY_USER_ID, c.getPaymentsByUserID).Methods(http.MethodGet)
 	router.HandleFunc(CANCEL_BY_ID, c.cancelPayment).Methods(http.MethodDelete)
+	return router
 }
 
 func (c *Controller) createPayment(w http.ResponseWriter, r *http.Request) {

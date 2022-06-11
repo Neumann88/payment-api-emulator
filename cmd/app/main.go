@@ -8,13 +8,12 @@ import (
 	"time"
 
 	"github.com/Neumann88/payment-api-emulator/config"
-	"github.com/Neumann88/payment-api-emulator/internal/controller"
-	"github.com/Neumann88/payment-api-emulator/internal/repository"
-	"github.com/Neumann88/payment-api-emulator/internal/usecase"
+	"github.com/Neumann88/payment-api-emulator/internal/payment"
 	"github.com/Neumann88/payment-api-emulator/pkg/db/migrate"
 	"github.com/Neumann88/payment-api-emulator/pkg/db/postgres"
 	"github.com/Neumann88/payment-api-emulator/pkg/http/server"
 	"github.com/Neumann88/payment-api-emulator/pkg/loggin"
+	"github.com/gorilla/mux"
 )
 
 func main() {
@@ -44,13 +43,17 @@ func main() {
 	)
 
 	// Layers
-	r := repository.NewRepository(pg)
-	u := usecase.NewUsecase(r)
-	h := controller.NewController(logger, u)
+	rep := payment.NewPaymentRepository(pg)
+	usc := payment.NewPaymentUsecase(rep)
+	con := payment.NewPaymentController(
+		logger,
+		usc,
+	)
 
 	// HTTP-Server
+	router := mux.NewRouter()
 	httpServer := server.NewHttpServer(
-		h.InitRoutes(),
+		con.Register(router),
 		cfg.HTTP.Port,
 		time.Duration(cfg.HTTP.ReadTimeout),
 		time.Duration(cfg.HTTP.WriteTimeout),

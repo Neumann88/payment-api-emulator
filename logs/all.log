@@ -136,3 +136,6 @@
 {"level":"info","time":"12-06-2022,06:08:17","caller":"app/main.go:60","message":"http server created and started at http://localhost:8080"}
 {"level":"error","time":"12-06-2022,06:08:46","caller":"payment/controller.go:90","message":"Payment-Usecase-Repository-GetStatus Payment-Reposiroty-GetStatusByID, sql: no rows in result set"}
 {"level":"info","time":"12-06-2022,06:14:32","caller":"app/main.go:68","message":"app - run - signal: interrupt"}
+{"level":"fatal","time":"12-06-2022,06:25:59","caller":"app/main.go:35","message":"postgres connection failed, dial tcp 127.0.0.1:5432: connect: connection refused"}
+{"level":"info","time":"12-06-2022,06:26:15","caller":"app/main.go:63","message":"http server created and started at http://localhost:8080"}
+{"level":"info","time":"12-06-2022,06:26:37","caller":"app/main.go:71","message":"app - run - signal: interrupt"}
