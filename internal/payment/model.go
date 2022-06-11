@@ -19,7 +19,7 @@ type Payment struct {
 	UserEmail string  `json:"user_email" db:"user_email"`
 	Currency  string  `json:"currency" db:"currency"`
 	CreatedAt string  `json:"created_at" db:"created_at"`
-	UreatedAt string  `json:"updated_at" db:"updated_at"`
+	UpdatedAt string  `json:"updated_at" db:"updated_at"`
 	Status    string  `json:"status" db:"status"`
 }
 

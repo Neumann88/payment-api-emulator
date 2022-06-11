@@ -131,7 +131,7 @@ func (r *Repository) GetPayments(ctx context.Context, input PaymentUser) ([]Paym
 			&value.Currency,
 			&value.Amount,
 			&value.CreatedAt,
-			&value.UreatedAt,
+			&value.UpdatedAt,
 			&value.Status,
 		)
 
