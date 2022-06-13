@@ -8,7 +8,10 @@ const (
 )
 
 const internalServerError = "internal server error"
-const invalidBodyData = "invalid body data"
-const invalidQueryID = "invalid query id"
-const invalidQueryEmail = "invalid query email"
-const invalidBodyEmail = "invalid body email"
+
+const (
+	invalidBodyData   = "invalid body data"
+	invalidQueryID    = "invalid query id"
+	invalidQueryEmail = "invalid query email"
+	invalidBodyEmail  = "invalid body email"
+)
