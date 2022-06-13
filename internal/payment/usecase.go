@@ -6,18 +6,18 @@ import (
 	"sync"
 )
 
-type Usecase struct {
-	repo PaymentRepository
+type useCase struct {
+	repo paymentRepository
 }
 
-func NewPaymentUsecase(r PaymentRepository) *Usecase {
-	return &Usecase{
-		repo: r,
+func NewPaymentUseCase(repo paymentRepository) *useCase {
+	return &useCase{
+		repo: repo,
 	}
 }
 
-func (u *Usecase) CreatePayment(ctx context.Context, input PaymentInput) (int64, error) {
-	paymentID, err := u.repo.CreatePayment(
+func (u *useCase) createPayment(ctx context.Context, input paymentInput) (int64, error) {
+	paymentID, err := u.repo.createPayment(
 		ctx,
 		input,
 	)
@@ -27,11 +27,11 @@ func (u *Usecase) CreatePayment(ctx context.Context, input PaymentInput) (int64,
 
 		wg.Add(1)
 		go func() {
-			_ = u.UpdateStatus(
+			_ = u.updateStatus(
 				ctx,
-				PaymentStatus{
+				paymentStatus{
 					ID:     paymentID,
-					Status: StatusError,
+					Status: statusError,
 				},
 			)
 
@@ -45,25 +45,25 @@ func (u *Usecase) CreatePayment(ctx context.Context, input PaymentInput) (int64,
 	return paymentID, nil
 }
 
-func (u *Usecase) UpdateStatus(ctx context.Context, input PaymentStatus) error {
-	status, err := u.repo.GetStatus(
+func (u *useCase) updateStatus(ctx context.Context, input paymentStatus) error {
+	status, err := u.repo.getStatus(
 		ctx,
 		input.ID,
 	)
 
 	if err != nil {
-		return fmt.Errorf("Payment-Usecase-UpdateStatus %s", err.Error())
+		return fmt.Errorf("payment-usecase-updateStatus %s", err.Error())
 	}
 
-	if status == StatusSuccess || status == StatusFailure {
-		return fmt.Errorf("Payment-Usecase-UpdateStatus, terminal status: %s", status)
+	if status == statusSuccess || status == statusFailure {
+		return fmt.Errorf("payment-usecase-updateStatus, terminal status: %s", status)
 	}
 
-	if input.Status == StatusError {
-		return fmt.Errorf("Payment-Usecase-UpdateStatus, invalid status: %s", input.Status)
+	if input.Status == statusError {
+		return fmt.Errorf("payment-usecase-updateStatus, invalid status: %s", input.Status)
 	}
 
-	r, err := u.repo.UpdateStatus(
+	r, err := u.repo.updateStatus(
 		ctx,
 		input,
 	)
@@ -75,28 +75,28 @@ func (u *Usecase) UpdateStatus(ctx context.Context, input PaymentStatus) error {
 	err = checkTerminalStatusRow(r)
 
 	if err != nil {
-		return fmt.Errorf("Payment-Usecase-UpdateStatus, %s", err.Error())
+		return fmt.Errorf("payment-usecase-updateStatus, %s", err.Error())
 	}
 
 	return nil
 }
 
-func (u *Usecase) GetStatus(ctx context.Context, paymentID int64) (string, error) {
-	return u.repo.GetStatus(
+func (u *useCase) getStatus(ctx context.Context, paymentID int64) (string, error) {
+	return u.repo.getStatus(
 		ctx,
 		paymentID,
 	)
 }
 
-func (u *Usecase) GetPayments(ctx context.Context, input PaymentUser) ([]Payment, error) {
-	return u.repo.GetPayments(
+func (u *useCase) getPayments(ctx context.Context, input paymentUser) ([]payment, error) {
+	return u.repo.getPayments(
 		ctx,
 		input,
 	)
 }
 
-func (u *Usecase) CancelPayment(ctx context.Context, paymentID int64) error {
-	r, err := u.repo.CancelPayment(
+func (u *useCase) deletePayment(ctx context.Context, paymentID int64) error {
+	r, err := u.repo.deletePayment(
 		ctx,
 		paymentID,
 	)
@@ -108,7 +108,7 @@ func (u *Usecase) CancelPayment(ctx context.Context, paymentID int64) error {
 	err = checkTerminalStatusRow(r)
 
 	if err != nil {
-		return fmt.Errorf("Payment-Usecase-CancelPayment, %s", err.Error())
+		return fmt.Errorf("Payment-Usecase-deletePayment, %s", err.Error())
 	}
 
 	return nil

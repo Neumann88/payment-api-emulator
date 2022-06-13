@@ -1,4 +1,4 @@
-package migrate
+package postgres
 
 import (
 	"github.com/Neumann88/payment-api-emulator/pkg/loggin"
@@ -7,7 +7,9 @@ import (
 	_ "github.com/golang-migrate/migrate/v4/source/file"
 )
 
-func InitMigrate(logger loggin.ILogger, dsn string) {
+func InitMigrate(logger loggin.ILogger, options DBOptions) {
+	dsn := getDSN(options)
+
 	if len(dsn) == 0 {
 		logger.Fatal("migrate: environment variable not declared")
 	}

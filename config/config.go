@@ -16,7 +16,12 @@ type HTTP struct {
 }
 
 type Postgres struct {
-	Dsn string `env:"POSTGRES_DSN"`
+	User     string `env:"POSTGRES_USER"`
+	Password string `env:"POSTGRES_PASSWORD"`
+	Host     string `env:"POSTGRES_HOST"`
+	Port     string `env:"POSTGRES_PORT"`
+	DB       string `env:"POSTGRES_DB"`
+	SSLMode  string `env:"POSTGRES_SSLMODE"`
 }
 
 type Config struct {

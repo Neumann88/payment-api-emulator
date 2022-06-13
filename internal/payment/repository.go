@@ -6,22 +6,26 @@ import (
 	"fmt"
 )
 
-type Repository struct {
+const payments = "payments"
+
+type repository struct {
 	db *sql.DB
 }
 
-func NewPaymentRepository(db *sql.DB) *Repository {
-	return &Repository{
+func NewPaymentRepository(db *sql.DB) *repository {
+	return &repository{
 		db: db,
 	}
 }
 
-func (r *Repository) CreatePayment(ctx context.Context, input PaymentInput) (int64, error) {
+func (r *repository) createPayment(ctx context.Context, input paymentInput) (int64, error) {
+	const format = `INSERT INTO %s (user_id, user_email, amount, currency)
+						VALUES ($1, $2, $3, $4)
+					RETURNING id`
+
 	query := fmt.Sprintf(
-		`INSERT INTO %s (user_id, user_email, amount, currency)
-			VALUES ($1, $2, $3, $4)
-		RETURNING id`,
-		Payments,
+		format,
+		payments,
 	)
 
 	row := r.db.QueryRowContext(
@@ -33,21 +37,30 @@ func (r *Repository) CreatePayment(ctx context.Context, input PaymentInput) (int
 		input.Currency,
 	)
 
+	if err := row.Err(); err != nil {
+		return 0, fmt.Errorf("payment-repository-createPayment, %s", err.Error())
+	}
+
 	var id int64
 	if err := row.Scan(&id); err != nil {
-		return 0, fmt.Errorf("Payment-Repository-CreatePayment, %s", err.Error())
+		if err == sql.ErrNoRows {
+			return 0, fmt.Errorf("payment-repository-createPayment, %s", "no result")
+		}
+
+		return 0, fmt.Errorf("payment-repository-createPayment, %s", err.Error())
 	}
 
 	return id, nil
 }
 
-func (r *Repository) UpdateStatus(ctx context.Context, input PaymentStatus) (int64, error) {
+func (r *repository) updateStatus(ctx context.Context, input paymentStatus) (int64, error) {
+	const format = `UPDATE %s SET status = $1
+						WHERE id = $2
+						AND status NOT IN ($3, $4)`
+
 	query := fmt.Sprintf(
-		`UPDATE %s
-			SET status = $1
-				WHERE id = $2
-			AND status NOT IN ($3, $4)`,
-		Payments,
+		format,
+		payments,
 	)
 
 	rows, err := r.db.ExecContext(
@@ -55,22 +68,24 @@ func (r *Repository) UpdateStatus(ctx context.Context, input PaymentStatus) (int
 		query,
 		input.Status,
 		input.ID,
-		StatusSuccess,
-		StatusFailure,
+		statusSuccess,
+		statusFailure,
 	)
 
 	if err != nil {
-		return 0, fmt.Errorf("Payment-Reposiroty-UpdateStatus, %s", err.Error())
+		return 0, fmt.Errorf("payment-reposiroty-updateStatus, %s", err.Error())
 	}
 
 	return rows.RowsAffected()
 }
 
-func (r *Repository) GetStatus(ctx context.Context, paymentID int64) (string, error) {
+func (r *repository) getStatus(ctx context.Context, paymentID int64) (string, error) {
+	const format = `SELECT status from %s
+						WHERE id = $1`
+
 	query := fmt.Sprintf(
-		`SELECT status from %s
-			WHERE id = $1`,
-		Payments,
+		format,
+		payments,
 	)
 
 	rows := r.db.QueryRowContext(
@@ -80,31 +95,46 @@ func (r *Repository) GetStatus(ctx context.Context, paymentID int64) (string, er
 	)
 
 	var status string
-	if err := rows.Scan(&status); err != nil {
-		return "", fmt.Errorf("Payment-Reposiroty-GetStatusByID, %s", err.Error())
+	if err := rows.Scan(&status); err != nil || err == sql.ErrNoRows {
+		if err == sql.ErrNoRows {
+			return "", fmt.Errorf("payment-repository-createPayment, %s", "no result")
+		}
+
+		return "", fmt.Errorf("payment-reposiroty-getStatus, %s", err.Error())
 	}
 
 	return status, nil
 }
 
-func (r *Repository) GetPayments(ctx context.Context, input PaymentUser) ([]Payment, error) {
+func (r *repository) getPayments(ctx context.Context, input paymentUser) ([]payment, error) {
 	var arg string
 	var value interface{}
 
 	if input.UserEmail != "" && input.UserID == 0 {
-		arg = User_Email
+		arg = "user_email"
 		value = input.UserEmail
 	}
 
 	if input.UserID != 0 && input.UserEmail == "" {
-		arg = User_ID
+		arg = "user_id"
 		value = input.UserID
 	}
 
+	const format = `SELECT
+						id,
+						user_id,
+						user_email,
+						currency,
+						amount,
+						created_at,
+						updated_at,
+						status
+					from %s
+						WHERE %s = $1`
+
 	query := fmt.Sprintf(
-		`SELECT * from %s
-			WHERE %s = $1`,
-		Payments,
+		format,
+		payments,
 		arg,
 	)
 
@@ -115,14 +145,14 @@ func (r *Repository) GetPayments(ctx context.Context, input PaymentUser) ([]Paym
 	)
 
 	if err != nil {
-		return []Payment{}, fmt.Errorf("Payment-Reposiroty-GetPayments, %s", err.Error())
+		return []payment{}, fmt.Errorf("payment-reposiroty-getPayments, %s", err.Error())
 	}
 
 	defer rows.Close()
 
-	var output []Payment
+	var output []payment
 	for rows.Next() {
-		value := Payment{}
+		value := payment{}
 
 		err := rows.Scan(
 			&value.ID,
@@ -136,37 +166,43 @@ func (r *Repository) GetPayments(ctx context.Context, input PaymentUser) ([]Paym
 		)
 
 		if err != nil {
-			return []Payment{}, fmt.Errorf("Payment-Reposiroty-GetPayments, %s", err.Error())
+			if err == sql.ErrNoRows {
+				return []payment{}, fmt.Errorf("payment-repository-createPayment, %s", "no result")
+			}
+
+			return []payment{}, fmt.Errorf("payment-reposiroty-getPayments, %s", err.Error())
 		}
 
 		output = append(output, value)
 	}
 
-	err = rows.Err()
-	if err != nil {
-		return []Payment{}, fmt.Errorf("Payment-Reposiroty-GetPayments, %s", err.Error())
+	if err := rows.Err(); err != nil {
+		return []payment{}, fmt.Errorf("payment-reposiroty-getPayments, %s", err.Error())
 	}
 
 	return output, nil
 }
 
-func (r *Repository) CancelPayment(ctx context.Context, paymentID int64) (int64, error) {
+func (r *repository) deletePayment(ctx context.Context, paymentID int64) (int64, error) {
+	const format = `DELETE FROM %s
+						WHERE id = $1
+						AND status NOT IN ($2, $3)`
+
 	query := fmt.Sprintf(
-		`DELETE FROM %s
-			WHERE id = $1 AND status NOT IN ($2, $3)`,
-		Payments,
+		format,
+		payments,
 	)
 
 	rows, err := r.db.ExecContext(
 		ctx,
 		query,
 		paymentID,
-		StatusSuccess,
-		StatusFailure,
+		statusSuccess,
+		statusFailure,
 	)
 
 	if err != nil {
-		return 0, fmt.Errorf("Payment-Repository-CancelPayment, %s", err.Error())
+		return 0, fmt.Errorf("Payment-Repository-deletePayment, %s", err.Error())
 	}
 
 	return rows.RowsAffected()

@@ -4,13 +4,19 @@ import (
 	"database/sql"
 )
 
-type postgres struct{}
-
-func NewPostgres() *postgres {
-	return &postgres{}
+type postgres struct {
+	options DBOptions
 }
 
-func (p *postgres) Connect(dsn string) (*sql.DB, error) {
+func NewPostgres(options DBOptions) *postgres {
+	return &postgres{
+		options: options,
+	}
+}
+
+func (p *postgres) Connect() (*sql.DB, error) {
+	dsn := getDSN(p.options)
+
 	db, err := sql.Open("postgres", dsn)
 
 	if err != nil {

@@ -9,7 +9,6 @@ import (
 
 	"github.com/Neumann88/payment-api-emulator/config"
 	"github.com/Neumann88/payment-api-emulator/internal/payment"
-	"github.com/Neumann88/payment-api-emulator/pkg/db/migrate"
 	"github.com/Neumann88/payment-api-emulator/pkg/db/postgres"
 	"github.com/Neumann88/payment-api-emulator/pkg/http/server"
 	"github.com/Neumann88/payment-api-emulator/pkg/loggin"
@@ -24,12 +23,19 @@ func main() {
 	}
 
 	// Logger
-	logger := loggin.NewLogger()
-	logger.Init(cfg.Logger.Debug)
+	logger := loggin.NewLogger(cfg.Logger.Debug)
 
 	// Database
-	db := postgres.NewPostgres()
-	pg, err := db.Connect(cfg.Postgres.Dsn)
+	dbOptions := postgres.DBOptions{
+		User:     cfg.Postgres.User,
+		Password: cfg.Postgres.Password,
+		Host:     cfg.Postgres.Host,
+		Port:     cfg.Postgres.Port,
+		DB:       cfg.Postgres.DB,
+		SSLmode:  cfg.Postgres.SSLMode,
+	}
+
+	pg, err := postgres.NewPostgres(dbOptions).Connect()
 
 	if err != nil {
 		logger.Fatalf("postgres connection failed, %s", err.Error())
@@ -37,14 +43,14 @@ func main() {
 	defer pg.Close()
 
 	// Scheme migrate
-	migrate.InitMigrate(
+	postgres.InitMigrate(
 		logger,
-		cfg.Postgres.Dsn,
+		dbOptions,
 	)
 
 	// Layers
 	rep := payment.NewPaymentRepository(pg)
-	usc := payment.NewPaymentUsecase(rep)
+	usc := payment.NewPaymentUseCase(rep)
 	con := payment.NewPaymentController(
 		logger,
 		usc,
@@ -52,6 +58,7 @@ func main() {
 
 	// HTTP-Server
 	router := mux.NewRouter()
+
 	httpServer := server.NewHttpServer(
 		con.Register(router),
 		cfg.HTTP.Port,

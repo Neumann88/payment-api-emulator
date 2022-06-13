@@ -3,6 +3,7 @@ package payment
 import (
 	"errors"
 	"net/http"
+	"net/mail"
 	"strconv"
 
 	"github.com/gorilla/mux"
@@ -34,4 +35,10 @@ func checkTerminalStatusRow(row int64) error {
 	}
 
 	return nil
+}
+
+func isEmail(address string) bool {
+	_, err := mail.ParseAddress(address)
+
+	return err == nil
 }

@@ -25,7 +25,7 @@ func TestCreatePayment(t *testing.T) {
 	tests := []struct {
 		name   string
 		mock   func()
-		input  PaymentInput
+		input  paymentInput
 		expect int64
 		err    error
 	}{
@@ -38,7 +38,7 @@ func TestCreatePayment(t *testing.T) {
 					WithArgs(1, "user_email", 10.5, "currency").
 					WillReturnRows(rows)
 			},
-			input: PaymentInput{
+			input: paymentInput{
 				UserID:    1,
 				UserEmail: "user_email",
 				Amount:    10.5,
@@ -54,7 +54,7 @@ func TestCreatePayment(t *testing.T) {
 					WithArgs(0, "", 0.0, "").
 					WillReturnError(errors.New("insert error"))
 			},
-			input: PaymentInput{
+			input: paymentInput{
 				UserID:    0,
 				UserEmail: "",
 				Amount:    0.0,
@@ -68,12 +68,14 @@ func TestCreatePayment(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			tt.mock()
 
-			got, err := r.CreatePayment(context.TODO(), PaymentInput{
-				UserID:    tt.input.UserID,
-				UserEmail: tt.input.UserEmail,
-				Amount:    tt.input.Amount,
-				Currency:  tt.input.Currency,
-			})
+			got, err := r.createPayment(
+				context.TODO(),
+				paymentInput{
+					UserID:    tt.input.UserID,
+					UserEmail: tt.input.UserEmail,
+					Amount:    tt.input.Amount,
+					Currency:  tt.input.Currency,
+				})
 
 			if tt.err != nil {
 				assert.Error(t, err)
@@ -103,7 +105,7 @@ func TestUpdateStatus(t *testing.T) {
 	tests := []struct {
 		name   string
 		mock   func()
-		input  PaymentStatus
+		input  paymentStatus
 		expect int64
 		err    error
 	}{
@@ -111,10 +113,10 @@ func TestUpdateStatus(t *testing.T) {
 			name: "Update status to success",
 			mock: func() {
 				dbMock.ExpectExec("UPDATE payments").
-					WithArgs("success", 1, StatusSuccess, StatusFailure).
+					WithArgs("success", 1, statusSuccess, statusFailure).
 					WillReturnResult(sqlmock.NewResult(0, 1))
 			},
-			input: PaymentStatus{
+			input: paymentStatus{
 				ID:     1,
 				Status: "success",
 			},
@@ -125,10 +127,10 @@ func TestUpdateStatus(t *testing.T) {
 			name: "Update status to failure",
 			mock: func() {
 				dbMock.ExpectExec("UPDATE payments").
-					WithArgs("failure", 1, StatusSuccess, StatusFailure).
+					WithArgs("failure", 1, statusSuccess, statusFailure).
 					WillReturnResult(sqlmock.NewResult(0, 1))
 			},
-			input: PaymentStatus{
+			input: paymentStatus{
 				ID:     1,
 				Status: "failure",
 			},
@@ -139,12 +141,12 @@ func TestUpdateStatus(t *testing.T) {
 			name: "Fail",
 			mock: func() {
 				dbMock.ExpectExec("UPDATE payments").
-					WithArgs("failure", 1, StatusSuccess, StatusFailure).
+					WithArgs("failure", 1, statusSuccess, statusFailure).
 					WillReturnError(errors.New("update error"))
 			},
-			input: PaymentStatus{
+			input: paymentStatus{
 				ID:     1,
-				Status: StatusFailure,
+				Status: statusFailure,
 			},
 			err: errors.New("update error"),
 		},
@@ -154,9 +156,9 @@ func TestUpdateStatus(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			tt.mock()
 
-			got, err := r.UpdateStatus(
+			got, err := r.updateStatus(
 				context.TODO(),
-				PaymentStatus{
+				paymentStatus{
 					ID:     tt.input.ID,
 					Status: tt.input.Status,
 				})
@@ -222,7 +224,7 @@ func TestGetStatus(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			tt.mock()
 
-			got, err := r.GetStatus(
+			got, err := r.getStatus(
 				context.TODO(),
 				tt.input,
 			)
@@ -255,8 +257,8 @@ func TestGetPayments(t *testing.T) {
 	tests := []struct {
 		name   string
 		mock   func()
-		input  PaymentUser
-		expect []Payment
+		input  paymentUser
+		expect []payment
 		err    error
 	}{
 		{
@@ -270,10 +272,10 @@ func TestGetPayments(t *testing.T) {
 					WithArgs(1).
 					WillReturnRows(rows)
 			},
-			input: PaymentUser{
+			input: paymentUser{
 				UserID: 1,
 			},
-			expect: []Payment{
+			expect: []payment{
 				{1, 1, 10.5, "user_email", "currency", "created_at", "updated_at", "status"},
 				{2, 2, 10.5, "user_email", "currency", "created_at", "updated_at", "status"},
 			},
@@ -290,10 +292,10 @@ func TestGetPayments(t *testing.T) {
 					WithArgs("email").
 					WillReturnRows(rows)
 			},
-			input: PaymentUser{
+			input: paymentUser{
 				UserEmail: "email",
 			},
-			expect: []Payment{
+			expect: []payment{
 				{1, 1, 10.5, "user_email", "currency", "created_at", "updated_at", "status"},
 				{2, 2, 10.5, "user_email", "currency", "created_at", "updated_at", "status"},
 			},
@@ -306,7 +308,7 @@ func TestGetPayments(t *testing.T) {
 					WithArgs(1).
 					WillReturnError(errors.New("not found"))
 			},
-			input: PaymentUser{
+			input: paymentUser{
 				UserID: 1,
 			},
 			err: errors.New("not found"),
@@ -317,9 +319,9 @@ func TestGetPayments(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			tt.mock()
 
-			got, err := r.GetPayments(
+			got, err := r.getPayments(
 				context.TODO(),
-				PaymentUser{
+				paymentUser{
 					UserID:    tt.input.UserID,
 					UserEmail: tt.input.UserEmail,
 				},
@@ -361,7 +363,7 @@ func TestCancelPayment(t *testing.T) {
 			name: "Cancel payment",
 			mock: func() {
 				dbMock.ExpectExec("DELETE").
-					WithArgs(1, StatusSuccess, StatusFailure).
+					WithArgs(1, statusSuccess, statusFailure).
 					WillReturnResult(sqlmock.NewResult(0, 1))
 			},
 			input:  1,
@@ -372,7 +374,7 @@ func TestCancelPayment(t *testing.T) {
 			name: "Fail",
 			mock: func() {
 				dbMock.ExpectExec("DELETE").
-					WithArgs(1, StatusSuccess, StatusFailure).
+					WithArgs(1, statusSuccess, statusFailure).
 					WillReturnError(errors.New("delete error"))
 			},
 			input: 1,
@@ -384,7 +386,7 @@ func TestCancelPayment(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			tt.mock()
 
-			got, err := r.CancelPayment(
+			got, err := r.deletePayment(
 				context.TODO(),
 				tt.input,
 			)

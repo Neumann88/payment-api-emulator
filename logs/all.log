@@ -139,3 +139,36 @@
 {"level":"fatal","time":"12-06-2022,06:25:59","caller":"app/main.go:35","message":"postgres connection failed, dial tcp 127.0.0.1:5432: connect: connection refused"}
 {"level":"info","time":"12-06-2022,06:26:15","caller":"app/main.go:63","message":"http server created and started at http://localhost:8080"}
 {"level":"info","time":"12-06-2022,06:26:37","caller":"app/main.go:71","message":"app - run - signal: interrupt"}
+{"level":"info","time":"13-06-2022,07:13:42","caller":"app/main.go:63","message":"http server created and started at http://localhost:8080"}
+{"level":"info","time":"13-06-2022,07:16:16","caller":"app/main.go:71","message":"app - run - signal: interrupt"}
+{"level":"info","time":"13-06-2022,07:16:27","caller":"app/main.go:63","message":"http server created and started at http://localhost:8080"}
+{"level":"info","time":"13-06-2022,07:17:00","caller":"app/main.go:71","message":"app - run - signal: interrupt"}
+{"level":"info","time":"13-06-2022,07:17:01","caller":"app/main.go:63","message":"http server created and started at http://localhost:8080"}
+{"level":"info","time":"13-06-2022,07:28:26","caller":"app/main.go:71","message":"app - run - signal: interrupt"}
+{"level":"info","time":"13-06-2022,07:28:40","caller":"app/main.go:63","message":"http server created and started at http://localhost:8080"}
+{"level":"info","time":"13-06-2022,07:30:06","caller":"app/main.go:71","message":"app - run - signal: interrupt"}
+{"level":"info","time":"13-06-2022,07:30:07","caller":"app/main.go:63","message":"http server created and started at http://localhost:8080"}
+{"level":"info","time":"13-06-2022,07:34:35","caller":"app/main.go:71","message":"app - run - signal: interrupt"}
+{"level":"info","time":"13-06-2022,08:02:23","caller":"app/main.go:63","message":"http server created and started at http://localhost:8080"}
+{"level":"error","time":"13-06-2022,08:02:33","caller":"payment/controller.go:77","message":"payment-controller-updateStatus, strconv.Atoi: parsing \"asd\": invalid syntax"}
+{"level":"info","time":"13-06-2022,08:04:29","caller":"app/main.go:71","message":"app - run - signal: interrupt"}
+{"level":"info","time":"13-06-2022,08:09:12","caller":"app/main.go:63","message":"http server created and started at http://localhost:8080"}
+{"level":"info","time":"13-06-2022,08:09:31","caller":"app/main.go:71","message":"app - run - signal: interrupt"}
+{"level":"info","time":"13-06-2022,08:13:46","caller":"app/main.go:63","message":"http server created and started at http://localhost:8080"}
+{"level":"info","time":"13-06-2022,08:15:24","caller":"app/main.go:71","message":"app - run - signal: interrupt"}
+{"level":"info","time":"13-06-2022,08:16:06","caller":"app/main.go:63","message":"http server created and started at http://localhost:8080"}
+{"level":"info","time":"13-06-2022,08:16:35","caller":"app/main.go:71","message":"app - run - signal: interrupt"}
+{"level":"info","time":"13-06-2022,08:16:49","caller":"app/main.go:63","message":"http server created and started at http://localhost:8080"}
+{"level":"info","time":"13-06-2022,08:17:08","caller":"app/main.go:71","message":"app - run - signal: interrupt"}
+{"level":"info","time":"13-06-2022,08:17:10","caller":"app/main.go:63","message":"http server created and started at http://localhost:8080"}
+{"level":"info","time":"13-06-2022,08:17:27","caller":"app/main.go:71","message":"app - run - signal: interrupt"}
+{"level":"info","time":"13-06-2022,08:17:33","caller":"app/main.go:63","message":"http server created and started at http://localhost:8080"}
+{"level":"info","time":"13-06-2022,08:17:45","caller":"app/main.go:71","message":"app - run - signal: interrupt"}
+{"level":"info","time":"13-06-2022,08:18:05","caller":"app/main.go:63","message":"http server created and started at http://localhost:8080"}
+{"level":"info","time":"13-06-2022,08:18:20","caller":"app/main.go:71","message":"app - run - signal: interrupt"}
+{"level":"info","time":"13-06-2022,08:22:37","caller":"app/main.go:63","message":"http server created and started at http://localhost:8080"}
+{"level":"error","time":"13-06-2022,08:23:35","caller":"payment/controller.go:206","message":"Payment-Usecase-deletePayment, terminal status"}
+{"level":"info","time":"13-06-2022,08:25:52","caller":"app/main.go:71","message":"app - run - signal: interrupt"}
+{"level":"fatal","time":"13-06-2022,10:33:10","caller":"migrate/migrate.go:18","message":"no scheme"}
+{"level":"info","time":"13-06-2022,10:41:41","caller":"app/main.go:69","message":"http server created and started at http://localhost:8080"}
+{"level":"info","time":"13-06-2022,10:41:51","caller":"app/main.go:77","message":"app - run - signal: interrupt"}

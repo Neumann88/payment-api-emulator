@@ -30,5 +30,5 @@ compose-up:
 .PHONY: compose-up
 
 compose-down:
-	docker-compose down --remove-orphans --volumes
+	docker-compose down --remove-orphans --volumes && docker system prune -a --volumes
 .PHONY: compose-down

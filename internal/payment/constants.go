@@ -1,15 +1,14 @@
 package payment
 
-const Payments = "payments"
-
 const (
-	StatusNew     = "new"
-	StatusError   = "error"
-	StatusSuccess = "success"
-	StatusFailure = "failure"
+	statusNew     = "new"
+	statusError   = "error"
+	statusSuccess = "success"
+	statusFailure = "failure"
 )
 
-const (
-	User_Email = "user_email"
-	User_ID    = "user_id"
-)
+const internalServerError = "internal server error"
+const invalidBodyData = "invalid body data"
+const invalidQueryID = "invalid query id"
+const invalidQueryEmail = "invalid query email"
+const invalidBodyEmail = "invalid body email"
