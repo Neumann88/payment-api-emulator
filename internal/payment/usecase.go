@@ -76,9 +76,7 @@ func (u *useCase) updateStatus(ctx context.Context, input paymentStatus) error {
 			return
 		}
 
-		err = checkTerminalStatusRow(r)
-
-		if err != nil {
+		if err := checkTerminalStatusRow(r); err != nil {
 			errorExeption <- fmt.Errorf("payment-usecase-updateStatus, %s", err.Error())
 		}
 
@@ -135,11 +133,10 @@ func (u *useCase) deletePayment(ctx context.Context, paymentID int64) error {
 
 		if err != nil {
 			errorExeption <- err
+			return
 		}
 
-		err = checkTerminalStatusRow(r)
-
-		if err != nil {
+		if err := checkTerminalStatusRow(r); err != nil {
 			errorExeption <- fmt.Errorf("payment-usecase-deletePayment, %s", err.Error())
 		}
 
