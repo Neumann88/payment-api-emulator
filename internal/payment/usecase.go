@@ -46,10 +46,6 @@ func (u *useCase) createPayment(ctx context.Context, input paymentInput) (int64,
 }
 
 func (u *useCase) updateStatus(ctx context.Context, input paymentStatus) error {
-	if input.Status == statusError || input.Status == statusNew {
-		return fmt.Errorf("payment-usecase-updateStatus, invalid status: %s", input.Status)
-	}
-
 	status, err := u.repo.getStatus(
 		ctx,
 		input.ID,
