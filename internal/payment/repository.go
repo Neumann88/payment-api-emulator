@@ -95,7 +95,7 @@ func (r *repository) getStatus(ctx context.Context, paymentID int64) (string, er
 	)
 
 	var status string
-	if err := rows.Scan(&status); err != nil || err == sql.ErrNoRows {
+	if err := rows.Scan(&status); err != nil {
 		if err == sql.ErrNoRows {
 			return "", fmt.Errorf("payment-repository-createPayment, %s", "no result")
 		}
@@ -150,7 +150,7 @@ func (r *repository) getPayments(ctx context.Context, input paymentUser) ([]paym
 
 	defer rows.Close()
 
-	var output []payment
+	output := make([]payment, 0)
 	for rows.Next() {
 		value := payment{}
 
