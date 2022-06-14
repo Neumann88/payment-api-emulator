@@ -1,10 +1,11 @@
 package payment
 
 const (
-	statusNew     = "new"
-	statusError   = "error"
-	statusSuccess = "success"
-	statusFailure = "failure"
+	statusNew      = "new"
+	statusError    = "error"
+	statusSuccess  = "success"
+	statusFailure  = "failure"
+	statusCanceled = "canceled"
 )
 
 const internalServerError = "internal server error"

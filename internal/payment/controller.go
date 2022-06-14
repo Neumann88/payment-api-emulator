@@ -26,7 +26,7 @@ const (
 	getStatusByID          = "/payments/{id}/status"
 	getPaymentsByUserEmail = "/payments/user" // query /payments/user?email=email
 	getPaymentsByUserID    = "/payments/user/{id}"
-	deletePaymentByID      = "/payments/{id}"
+	cancelPaymentByID      = "/payments/{id}"
 )
 
 func (c *controller) Register(router *mux.Router) *mux.Router {
@@ -35,7 +35,7 @@ func (c *controller) Register(router *mux.Router) *mux.Router {
 	router.HandleFunc(getStatusByID, c.getStatus).Methods(http.MethodGet)
 	router.HandleFunc(getPaymentsByUserEmail, c.getPaymentsByUserEmail).Methods(http.MethodGet)
 	router.HandleFunc(getPaymentsByUserID, c.getPaymentsByUserID).Methods(http.MethodGet)
-	router.HandleFunc(deletePaymentByID, c.deletePayment).Methods(http.MethodDelete)
+	router.HandleFunc(cancelPaymentByID, c.cancelPayment).Methods(http.MethodPut)
 	return router
 }
 
@@ -189,7 +189,7 @@ func (c *controller) getPaymentsByUserID(w http.ResponseWriter, r *http.Request)
 	)
 }
 
-func (c *controller) deletePayment(w http.ResponseWriter, r *http.Request) {
+func (c *controller) cancelPayment(w http.ResponseWriter, r *http.Request) {
 	paymentID, err := getQueryId(r)
 
 	if err != nil {
@@ -197,7 +197,7 @@ func (c *controller) deletePayment(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = c.usecase.deletePayment(
+	err = c.usecase.cancelPayment(
 		r.Context(),
 		paymentID,
 	)

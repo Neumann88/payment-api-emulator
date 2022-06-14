@@ -26,4 +26,4 @@
 
     5. "/payments/user?email=...", Method: GET - возвращает транзакции пользователя по его email
 
-    5. "/payments/{id}", Method: DELETE - удаляет транзакцию по ее id
+    5. "/payments/{id}", Method: PUT - отменяет транзакцию транзакцию по ее id

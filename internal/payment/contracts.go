@@ -9,7 +9,7 @@ type paymentRepository interface {
 	updateStatus(ctx context.Context, input paymentStatus) (int64, error)
 	getStatus(ctx context.Context, paymentID int64) (string, error)
 	getPayments(ctx context.Context, input paymentUser) ([]payment, error)
-	deletePayment(ctx context.Context, paymentID int64) (int64, error)
+	cancelPayment(ctx context.Context, paymentID int64) (int64, error)
 }
 
 type paymentUseCase interface {
@@ -17,5 +17,5 @@ type paymentUseCase interface {
 	updateStatus(ctx context.Context, input paymentStatus) error
 	getStatus(ctx context.Context, paymentID int64) (string, error)
 	getPayments(ctx context.Context, input paymentUser) ([]payment, error)
-	deletePayment(ctx context.Context, paymentID int64) error
+	cancelPayment(ctx context.Context, paymentID int64) error
 }

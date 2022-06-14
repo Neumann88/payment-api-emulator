@@ -1,5 +1,16 @@
-CREATE TYPE valid_status AS ENUM('new', 'success', 'failure', 'error');
-CREATE TYPE valid_currency AS ENUM('usd', 'eur', 'rub');
+CREATE TYPE valid_status AS ENUM (
+    'new',
+    'success',
+    'failure',
+    'error',
+    'canceled'
+);
+
+CREATE TYPE valid_currency AS ENUM (
+    'usd',
+    'eur',
+    'rub'
+);
 
 CREATE TABLE IF NOT EXISTS payments (
     id SERIAL PRIMARY KEY,

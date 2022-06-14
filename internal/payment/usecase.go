@@ -106,7 +106,7 @@ func (u *useCase) getPayments(ctx context.Context, input paymentUser) ([]payment
 }
 
 // TODO: дубликат
-func (u *useCase) deletePayment(ctx context.Context, paymentID int64) error {
+func (u *useCase) cancelPayment(ctx context.Context, paymentID int64) error {
 	errorExeption := make(chan error)
 	dCtx, cancel := context.WithCancel(ctx)
 
@@ -121,12 +121,12 @@ func (u *useCase) deletePayment(ctx context.Context, paymentID int64) error {
 		}
 
 		if status == statusSuccess || status == statusFailure {
-			errorExeption <- fmt.Errorf("payment-usecase-deletePayment-getStatus, terminal status %s", status)
+			errorExeption <- fmt.Errorf("payment-usecase-cancelPayment-getStatus, terminal status %s", status)
 		}
 	}()
 
 	go func() {
-		r, err := u.repo.deletePayment(
+		r, err := u.repo.cancelPayment(
 			dCtx,
 			paymentID,
 		)

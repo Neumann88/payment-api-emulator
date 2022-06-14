@@ -183,10 +183,10 @@ func (r *repository) getPayments(ctx context.Context, input paymentUser) ([]paym
 	return output, nil
 }
 
-func (r *repository) deletePayment(ctx context.Context, paymentID int64) (int64, error) {
-	const format = `DELETE FROM %s
-						WHERE id = $1
-						AND status NOT IN ($2, $3)`
+func (r *repository) cancelPayment(ctx context.Context, paymentID int64) (int64, error) {
+	const format = `UPDATE %s SET status = $1
+						WHERE id = $2
+						AND status NOT IN ($3, $4)`
 
 	query := fmt.Sprintf(
 		format,
@@ -196,13 +196,14 @@ func (r *repository) deletePayment(ctx context.Context, paymentID int64) (int64,
 	rows, err := r.db.ExecContext(
 		ctx,
 		query,
+		statusCanceled,
 		paymentID,
 		statusSuccess,
 		statusFailure,
 	)
 
 	if err != nil {
-		return 0, fmt.Errorf("Payment-Repository-deletePayment, %s", err.Error())
+		return 0, fmt.Errorf("payment-repository-cancelPayment, %s", err.Error())
 	}
 
 	return rows.RowsAffected()

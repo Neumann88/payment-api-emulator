@@ -362,8 +362,8 @@ func TestCancelPayment(t *testing.T) {
 		{
 			name: "Cancel payment",
 			mock: func() {
-				dbMock.ExpectExec("DELETE").
-					WithArgs(1, statusSuccess, statusFailure).
+				dbMock.ExpectExec("UPDATE payments").
+					WithArgs("canceled", 1, statusSuccess, statusFailure).
 					WillReturnResult(sqlmock.NewResult(0, 1))
 			},
 			input:  1,
@@ -373,12 +373,12 @@ func TestCancelPayment(t *testing.T) {
 		{
 			name: "Fail",
 			mock: func() {
-				dbMock.ExpectExec("DELETE").
-					WithArgs(1, statusSuccess, statusFailure).
-					WillReturnError(errors.New("delete error"))
+				dbMock.ExpectExec("UPDATE payments").
+					WithArgs("canceled", 1, statusSuccess, statusFailure).
+					WillReturnError(errors.New("update error"))
 			},
 			input: 1,
-			err:   errors.New("delete error"),
+			err:   errors.New("update error"),
 		},
 	}
 
@@ -386,7 +386,7 @@ func TestCancelPayment(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			tt.mock()
 
-			got, err := r.deletePayment(
+			got, err := r.cancelPayment(
 				context.TODO(),
 				tt.input,
 			)
