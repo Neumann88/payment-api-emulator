@@ -4,20 +4,21 @@ import (
 	"encoding/json"
 	"net/http"
 
+	"github.com/gorilla/mux"
+
 	"github.com/Neumann88/payment-api-emulator/internal/contracts"
 	"github.com/Neumann88/payment-api-emulator/internal/entity"
 	"github.com/Neumann88/payment-api-emulator/pkg/loggin"
 	"github.com/Neumann88/payment-api-emulator/pkg/utils"
-	"github.com/gorilla/mux"
 )
 
-type controller struct {
+type Controller struct {
 	usecase contracts.PaymentUseCase
 	logger  loggin.ILogger
 }
 
-func NewPaymentController(l loggin.ILogger, u contracts.PaymentUseCase) *controller {
-	return &controller{
+func NewPaymentController(l loggin.ILogger, u contracts.PaymentUseCase) *Controller {
+	return &Controller{
 		logger:  l,
 		usecase: u,
 	}
@@ -32,7 +33,7 @@ const (
 	cancelPaymentByID      = "/payments/{id}"
 )
 
-func (c *controller) Register(router *mux.Router) *mux.Router {
+func (c *Controller) Register(router *mux.Router) *mux.Router {
 	router.HandleFunc(createPayment, c.createPayment).Methods(http.MethodPost)
 	router.HandleFunc(updateStatusByID, c.updateStatus).Methods(http.MethodPut)
 	router.HandleFunc(getStatusByID, c.getStatus).Methods(http.MethodGet)
@@ -42,7 +43,7 @@ func (c *controller) Register(router *mux.Router) *mux.Router {
 	return router
 }
 
-func (c *controller) createPayment(w http.ResponseWriter, r *http.Request) {
+func (c *Controller) createPayment(w http.ResponseWriter, r *http.Request) {
 	var input entity.PaymentInput
 
 	if err := json.NewDecoder(r.Body).Decode(&input); err != nil {
@@ -68,15 +69,22 @@ func (c *controller) createPayment(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusCreated)
-	json.NewEncoder(w).Encode(
+
+	err = json.NewEncoder(w).Encode(
 		entity.PaymentStatus{
 			ID: id,
 		},
 	)
+
+	if err != nil {
+		c.logger.Error(err)
+		http.Error(w, utils.InternalServerError, http.StatusInternalServerError)
+		return
+	}
 }
 
-func (c *controller) updateStatus(w http.ResponseWriter, r *http.Request) {
-	paymentID, err := utils.GetQueryId(r)
+func (c *Controller) updateStatus(w http.ResponseWriter, r *http.Request) {
+	paymentID, err := utils.GetQueryID(r)
 
 	if err != nil {
 		http.Error(w, utils.InvalidQueryID, http.StatusBadRequest)
@@ -105,8 +113,8 @@ func (c *controller) updateStatus(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 }
 
-func (c *controller) getStatus(w http.ResponseWriter, r *http.Request) {
-	paymentID, err := utils.GetQueryId(r)
+func (c *Controller) getStatus(w http.ResponseWriter, r *http.Request) {
+	paymentID, err := utils.GetQueryID(r)
 
 	if err != nil {
 		http.Error(w, utils.InvalidQueryID, http.StatusBadRequest)
@@ -126,14 +134,21 @@ func (c *controller) getStatus(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(
+
+	err = json.NewEncoder(w).Encode(
 		entity.PaymentStatus{
 			Status: status,
 		},
 	)
+
+	if err != nil {
+		c.logger.Error(err)
+		http.Error(w, utils.InternalServerError, http.StatusInternalServerError)
+		return
+	}
 }
 
-func (c *controller) getPaymentsByUserEmail(w http.ResponseWriter, r *http.Request) {
+func (c *Controller) getPaymentsByUserEmail(w http.ResponseWriter, r *http.Request) {
 	userEmail := r.URL.Query().Get("email")
 	if ok := utils.IsEmail(userEmail); !ok {
 		http.Error(w, utils.InvalidQueryEmail, http.StatusBadRequest)
@@ -155,15 +170,22 @@ func (c *controller) getPaymentsByUserEmail(w http.ResponseWriter, r *http.Reque
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(
+
+	err = json.NewEncoder(w).Encode(
 		entity.PaymentsData{
 			Data: data,
 		},
 	)
+
+	if err != nil {
+		c.logger.Error(err)
+		http.Error(w, utils.InternalServerError, http.StatusInternalServerError)
+		return
+	}
 }
 
-func (c *controller) getPaymentsByUserID(w http.ResponseWriter, r *http.Request) {
-	userID, err := utils.GetQueryId(r)
+func (c *Controller) getPaymentsByUserID(w http.ResponseWriter, r *http.Request) {
+	userID, err := utils.GetQueryID(r)
 
 	if err != nil {
 		http.Error(w, utils.InvalidQueryID, http.StatusBadRequest)
@@ -185,15 +207,22 @@ func (c *controller) getPaymentsByUserID(w http.ResponseWriter, r *http.Request)
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(
+
+	err = json.NewEncoder(w).Encode(
 		entity.PaymentsData{
 			Data: data,
 		},
 	)
+
+	if err != nil {
+		c.logger.Error(err)
+		http.Error(w, utils.InternalServerError, http.StatusInternalServerError)
+		return
+	}
 }
 
-func (c *controller) cancelPayment(w http.ResponseWriter, r *http.Request) {
-	paymentID, err := utils.GetQueryId(r)
+func (c *Controller) cancelPayment(w http.ResponseWriter, r *http.Request) {
+	paymentID, err := utils.GetQueryID(r)
 
 	if err != nil {
 		http.Error(w, utils.InvalidQueryID, http.StatusBadRequest)

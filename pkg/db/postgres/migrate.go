@@ -1,10 +1,13 @@
 package postgres
 
 import (
-	"github.com/Neumann88/payment-api-emulator/pkg/loggin"
 	"github.com/golang-migrate/migrate/v4"
+	// need for migrate
 	_ "github.com/golang-migrate/migrate/v4/database/postgres"
+	// need for migrate
 	_ "github.com/golang-migrate/migrate/v4/source/file"
+
+	"github.com/Neumann88/payment-api-emulator/pkg/loggin"
 )
 
 func InitMigrate(logger loggin.ILogger, options DBOptions) {

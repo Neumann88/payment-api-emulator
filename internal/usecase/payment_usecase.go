@@ -9,17 +9,17 @@ import (
 	"github.com/Neumann88/payment-api-emulator/internal/entity"
 )
 
-type paymentUseCase struct {
+type PaymentUseCase struct {
 	repo contracts.PaymentRepository
 }
 
-func NewPaymentUseCase(repo contracts.PaymentRepository) *paymentUseCase {
-	return &paymentUseCase{
+func NewPaymentUseCase(repo contracts.PaymentRepository) *PaymentUseCase {
+	return &PaymentUseCase{
 		repo: repo,
 	}
 }
 
-func (u *paymentUseCase) CreatePayment(ctx context.Context, input entity.PaymentInput) (int64, error) {
+func (u *PaymentUseCase) CreatePayment(ctx context.Context, input entity.PaymentInput) (int64, error) {
 	paymentID, err := u.repo.CreatePayment(
 		ctx,
 		input,
@@ -48,7 +48,7 @@ func (u *paymentUseCase) CreatePayment(ctx context.Context, input entity.Payment
 	return paymentID, nil
 }
 
-func (u *paymentUseCase) UpdateStatus(ctx context.Context, input entity.PaymentStatus) error {
+func (u *PaymentUseCase) UpdateStatus(ctx context.Context, input entity.PaymentStatus) error {
 	row, err := u.repo.UpdateStatus(
 		ctx,
 		input,
@@ -64,21 +64,21 @@ func (u *paymentUseCase) UpdateStatus(ctx context.Context, input entity.PaymentS
 	return nil
 }
 
-func (u *paymentUseCase) GetStatus(ctx context.Context, paymentID int64) (string, error) {
+func (u *PaymentUseCase) GetStatus(ctx context.Context, paymentID int64) (string, error) {
 	return u.repo.GetStatus(
 		ctx,
 		paymentID,
 	)
 }
 
-func (u *paymentUseCase) GetPayments(ctx context.Context, input entity.PaymentUser) ([]entity.Payment, error) {
+func (u *PaymentUseCase) GetPayments(ctx context.Context, input entity.PaymentUser) ([]entity.Payment, error) {
 	return u.repo.GetPayments(
 		ctx,
 		input,
 	)
 }
 
-func (u *paymentUseCase) CancelPayment(ctx context.Context, paymentID int64) error {
+func (u *PaymentUseCase) CancelPayment(ctx context.Context, paymentID int64) error {
 	row, err := u.repo.CancelPayment(
 		ctx,
 		paymentID,

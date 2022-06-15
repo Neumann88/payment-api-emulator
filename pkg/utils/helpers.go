@@ -8,7 +8,7 @@ import (
 	"github.com/gorilla/mux"
 )
 
-func GetQueryId(r *http.Request) (int64, error) {
+func GetQueryID(r *http.Request) (int64, error) {
 	id := mux.Vars(r)["id"]
 	convertedID, err := ConverteIDtoI64(id)
 

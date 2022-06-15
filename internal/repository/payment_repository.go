@@ -10,17 +10,17 @@ import (
 
 const payments = "payments"
 
-type paymentRepository struct {
+type PaymentRepository struct {
 	db *sql.DB
 }
 
-func NewPaymentRepository(db *sql.DB) *paymentRepository {
-	return &paymentRepository{
+func NewPaymentRepository(db *sql.DB) *PaymentRepository {
+	return &PaymentRepository{
 		db: db,
 	}
 }
 
-func (r *paymentRepository) CreatePayment(ctx context.Context, input entity.PaymentInput) (int64, error) {
+func (r *PaymentRepository) CreatePayment(ctx context.Context, input entity.PaymentInput) (int64, error) {
 	const format = `INSERT INTO %s (user_id, user_email, amount, currency)
 						VALUES ($1, $2, $3, $4)
 					RETURNING id`
@@ -55,7 +55,7 @@ func (r *paymentRepository) CreatePayment(ctx context.Context, input entity.Paym
 	return id, nil
 }
 
-func (r *paymentRepository) UpdateStatus(ctx context.Context, input entity.PaymentStatus) (int64, error) {
+func (r *PaymentRepository) UpdateStatus(ctx context.Context, input entity.PaymentStatus) (int64, error) {
 	const format = `UPDATE %s SET status = $1
 						WHERE id = $2
 						AND status NOT IN ($3, $4)`
@@ -81,7 +81,7 @@ func (r *paymentRepository) UpdateStatus(ctx context.Context, input entity.Payme
 	return rows.RowsAffected()
 }
 
-func (r *paymentRepository) GetStatus(ctx context.Context, paymentID int64) (string, error) {
+func (r *PaymentRepository) GetStatus(ctx context.Context, paymentID int64) (string, error) {
 	const format = `SELECT status from %s
 						WHERE id = $1`
 
@@ -108,7 +108,7 @@ func (r *paymentRepository) GetStatus(ctx context.Context, paymentID int64) (str
 	return status, nil
 }
 
-func (r *paymentRepository) GetPayments(ctx context.Context, input entity.PaymentUser) ([]entity.Payment, error) {
+func (r *PaymentRepository) GetPayments(ctx context.Context, input entity.PaymentUser) ([]entity.Payment, error) {
 	var arg string
 	var value interface{}
 
@@ -185,7 +185,7 @@ func (r *paymentRepository) GetPayments(ctx context.Context, input entity.Paymen
 	return output, nil
 }
 
-func (r *paymentRepository) CancelPayment(ctx context.Context, paymentID int64) (int64, error) {
+func (r *PaymentRepository) CancelPayment(ctx context.Context, paymentID int64) (int64, error) {
 	const format = `UPDATE %s SET status = $1
 						WHERE id = $2
 						AND status NOT IN ($3, $4)`

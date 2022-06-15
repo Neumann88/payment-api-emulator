@@ -7,6 +7,8 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/gorilla/mux"
+
 	"github.com/Neumann88/payment-api-emulator/config"
 	"github.com/Neumann88/payment-api-emulator/internal/controller"
 	"github.com/Neumann88/payment-api-emulator/internal/repository"
@@ -14,7 +16,6 @@ import (
 	"github.com/Neumann88/payment-api-emulator/pkg/db/postgres"
 	"github.com/Neumann88/payment-api-emulator/pkg/http/server"
 	"github.com/Neumann88/payment-api-emulator/pkg/loggin"
-	"github.com/gorilla/mux"
 )
 
 func main() {
@@ -66,7 +67,7 @@ func main() {
 	// HTTP-Server
 	router := mux.NewRouter()
 
-	httpServer := server.NewHttpServer(
+	httpServer := server.NewHTTPServer(
 		con.Register(router),
 		cfg.HTTP.Port,
 		time.Duration(cfg.HTTP.ReadTimeout)*time.Second,
@@ -83,12 +84,13 @@ func main() {
 	select {
 	case s := <-interrupt:
 		logger.Infof("app - run - signal: %s", s.String())
-	case err := <-httpServer.Notify():
+	case err = <-httpServer.Notify():
 		logger.Errorf("app - run - httpServer.Notify: %s", err.Error())
 	}
 
 	// Shutdown
 	err = httpServer.Shutdown()
+
 	if err != nil {
 		logger.Errorf("app - run - httpServer.Shutdown: %s", err.Error())
 	}

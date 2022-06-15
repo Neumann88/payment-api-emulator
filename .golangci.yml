@@ -1,0 +1,40 @@
+run:
+  deadline: 10m
+  issues-exit-code: 1
+  tests: true
+  skip-dirs:
+    - bin
+    - vendor
+    - var
+    - tmp
+    - internal/generated
+
+linters-settings:
+  govet:
+    check-shadowing: true
+  golint:
+    min-confidence: 0
+  dupl:
+    threshold: 100
+  goconst:
+    min-len: 2
+    min-occurrences: 2
+
+linters:
+  disable-all: true
+  enable:
+    - golint
+    - govet
+    - errcheck
+    - deadcode
+    - structcheck
+    - varcheck
+    - ineffassign
+    - typecheck
+    - goconst
+    - gosec
+    - goimports
+    - gosimple
+    - unused
+    - staticcheck # enable before push
+    # - dupl # - it's very slow, enable if you really know why you need it

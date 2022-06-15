@@ -6,8 +6,10 @@ import (
 	"testing"
 
 	"github.com/DATA-DOG/go-sqlmock"
-	"github.com/Neumann88/payment-api-emulator/internal/entity"
+
 	"github.com/stretchr/testify/assert"
+
+	"github.com/Neumann88/payment-api-emulator/internal/entity"
 )
 
 func TestCreatePayment(t *testing.T) {

@@ -6,13 +6,13 @@ import (
 	"time"
 )
 
-type server struct {
+type Server struct {
 	server          *http.Server
 	notify          chan error
 	shutdownTimeout time.Duration
 }
 
-func NewHttpServer(handler http.Handler, port string, readTimeout, writeTimeout, shutdownTime time.Duration) *server {
+func NewHTTPServer(handler http.Handler, port string, readTimeout, writeTimeout, shutdownTime time.Duration) *Server {
 	httpServer := &http.Server{
 		Addr:         ":" + port,
 		Handler:      handler,
@@ -20,7 +20,7 @@ func NewHttpServer(handler http.Handler, port string, readTimeout, writeTimeout,
 		WriteTimeout: writeTimeout,
 	}
 
-	serv := &server{
+	serv := &Server{
 		server:          httpServer,
 		notify:          make(chan error, 1),
 		shutdownTimeout: shutdownTime,
@@ -31,18 +31,18 @@ func NewHttpServer(handler http.Handler, port string, readTimeout, writeTimeout,
 	return serv
 }
 
-func (s *server) start() {
+func (s *Server) start() {
 	go func() {
 		s.notify <- s.server.ListenAndServe()
 		close(s.notify)
 	}()
 }
 
-func (s *server) Notify() <-chan error {
+func (s *Server) Notify() <-chan error {
 	return s.notify
 }
 
-func (s *server) Shutdown() error {
+func (s *Server) Shutdown() error {
 	ctx, cancel := context.WithTimeout(context.Background(), s.shutdownTimeout)
 	defer cancel()
 

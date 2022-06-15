@@ -7,21 +7,21 @@ import (
 	"time"
 )
 
-type postgres struct {
+type Postgres struct {
 	options      DBOptions
 	connAttempts int
 	connTimeout  time.Duration
 }
 
-func NewPostgres(options DBOptions, connAttempts int, connTimeout time.Duration) *postgres {
-	return &postgres{
+func NewPostgres(options DBOptions, connAttempts int, connTimeout time.Duration) *Postgres {
+	return &Postgres{
 		options:      options,
 		connAttempts: connAttempts,
 		connTimeout:  connTimeout,
 	}
 }
 
-func (p *postgres) Connect() (*sql.DB, error) {
+func (p *Postgres) Connect() (*sql.DB, error) {
 	dsn := getDSN(p.options)
 
 	db, err := sql.Open("postgres", dsn)

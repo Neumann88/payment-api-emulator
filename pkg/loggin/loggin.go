@@ -21,12 +21,12 @@ type ILogger interface {
 	Fatal(args ...interface{})
 }
 
-type logger struct {
+type Logger struct {
 	loggin ILogger
 }
 
-func NewLogger(debug bool) *logger {
-	return &logger{
+func NewLogger(debug bool) *Logger {
+	return &Logger{
 		loggin: InitZap(debug),
 	}
 }
@@ -65,42 +65,42 @@ func InitZap(debug bool) ILogger {
 	return zap.New(core, zap.AddCallerSkip(1), zap.AddCaller()).Sugar()
 }
 
-func (l *logger) Debugf(message string, args ...interface{}) {
+func (l *Logger) Debugf(message string, args ...interface{}) {
 	l.loggin.Debugf(message, args...)
 }
 
-func (l *logger) Debug(args ...interface{}) {
+func (l *Logger) Debug(args ...interface{}) {
 	l.loggin.Debug(args...)
 }
 
-func (l *logger) Infof(message string, args ...interface{}) {
+func (l *Logger) Infof(message string, args ...interface{}) {
 	l.loggin.Infof(message, args...)
 }
 
-func (l *logger) Info(args ...interface{}) {
+func (l *Logger) Info(args ...interface{}) {
 	l.loggin.Info(args...)
 }
 
-func (l *logger) Warnf(message string, args ...interface{}) {
+func (l *Logger) Warnf(message string, args ...interface{}) {
 	l.loggin.Warnf(message, args...)
 }
 
-func (l *logger) Warn(args ...interface{}) {
+func (l *Logger) Warn(args ...interface{}) {
 	l.loggin.Warn(args...)
 }
 
-func (l *logger) Errorf(message string, args ...interface{}) {
+func (l *Logger) Errorf(message string, args ...interface{}) {
 	l.loggin.Errorf(message, args...)
 }
 
-func (l *logger) Error(args ...interface{}) {
+func (l *Logger) Error(args ...interface{}) {
 	l.loggin.Error(args...)
 }
 
-func (l *logger) Fatalf(message string, args ...interface{}) {
+func (l *Logger) Fatalf(message string, args ...interface{}) {
 	l.loggin.Fatalf(message, args...)
 }
 
-func (l *logger) Fatal(args ...interface{}) {
+func (l *Logger) Fatal(args ...interface{}) {
 	l.loggin.Fatal(args...)
 }
