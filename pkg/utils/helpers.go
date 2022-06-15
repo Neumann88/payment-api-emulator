@@ -1,7 +1,6 @@
-package payment
+package utils
 
 import (
-	"errors"
 	"net/http"
 	"net/mail"
 	"strconv"
@@ -9,9 +8,9 @@ import (
 	"github.com/gorilla/mux"
 )
 
-func getQueryId(r *http.Request) (int64, error) {
+func GetQueryId(r *http.Request) (int64, error) {
 	id := mux.Vars(r)["id"]
-	convertedID, err := converteIDtoI64(id)
+	convertedID, err := ConverteIDtoI64(id)
 
 	if err != nil {
 		return 0, err
@@ -20,7 +19,7 @@ func getQueryId(r *http.Request) (int64, error) {
 	return convertedID, nil
 }
 
-func converteIDtoI64(id string) (int64, error) {
+func ConverteIDtoI64(id string) (int64, error) {
 	convertedID, err := strconv.Atoi(id)
 
 	if err != nil {
@@ -30,15 +29,7 @@ func converteIDtoI64(id string) (int64, error) {
 	return int64(convertedID), nil
 }
 
-func checkTerminalStatusRow(row int64) error {
-	if row == 0 {
-		return errors.New("terminal status")
-	}
-
-	return nil
-}
-
-func isEmail(address string) bool {
+func IsEmail(address string) bool {
 	_, err := mail.ParseAddress(address)
 
 	return err == nil

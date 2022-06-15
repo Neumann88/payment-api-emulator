@@ -10,24 +10,26 @@ type Logger struct {
 
 type HTTP struct {
 	Port            string `yaml:"port" env:"HTTP_PORT" env-required:"true"`
-	WriteTimeout    int64  `yaml:"writeTimeout" env:"HTTP_WRITE_TIMEOUT" env-required:"true"`
-	ReadTimeout     int64  `yaml:"readTimeout" env:"HTTP_READ_TIMEOUT" env-required:"true"`
-	ShutdownTimeout int64  `yaml:"shutdownTimeout" env:"HTTP_SHUT_DOWN_TIMEOUT" env-required:"true"`
+	WriteTimeout    int    `yaml:"writeTimeout" env:"HTTP_WRITE_TIMEOUT" env-required:"true"`
+	ReadTimeout     int    `yaml:"readTimeout" env:"HTTP_READ_TIMEOUT" env-required:"true"`
+	ShutdownTimeout int    `yaml:"shutdownTimeout" env:"HTTP_SHUT_DOWN_TIMEOUT" env-required:"true"`
 }
 
 type Postgres struct {
-	User     string `env:"POSTGRES_USER"`
-	Password string `env:"POSTGRES_PASSWORD"`
-	Host     string `env:"POSTGRES_HOST"`
-	Port     string `env:"POSTGRES_PORT"`
-	DB       string `env:"POSTGRES_DB"`
-	SSLMode  string `env:"POSTGRES_SSLMODE"`
+	User         string `env:"POSTGRES_USER"`
+	Password     string `env:"POSTGRES_PASSWORD"`
+	Host         string `env:"POSTGRES_HOST"`
+	Port         string `env:"POSTGRES_PORT"`
+	DB           string `env:"POSTGRES_DB"`
+	SSLMode      string `env:"POSTGRES_SSLMODE"`
+	ConnAttempts int    `yaml:"connAttempts"`
+	ConnTimeout  int    `yaml:"connTimeout"`
 }
 
 type Config struct {
-	Logger `yaml:"logger"`
-	HTTP   `yaml:"http"`
-	Postgres
+	Logger   `yaml:"logger"`
+	HTTP     `yaml:"http"`
+	Postgres `yaml:"postgres"`
 }
 
 func NewConfig() (*Config, error) {

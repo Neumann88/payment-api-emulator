@@ -8,7 +8,9 @@ import (
 	"time"
 
 	"github.com/Neumann88/payment-api-emulator/config"
-	"github.com/Neumann88/payment-api-emulator/internal/payment"
+	"github.com/Neumann88/payment-api-emulator/internal/controller"
+	"github.com/Neumann88/payment-api-emulator/internal/repository"
+	"github.com/Neumann88/payment-api-emulator/internal/usecase"
 	"github.com/Neumann88/payment-api-emulator/pkg/db/postgres"
 	"github.com/Neumann88/payment-api-emulator/pkg/http/server"
 	"github.com/Neumann88/payment-api-emulator/pkg/loggin"
@@ -35,11 +37,16 @@ func main() {
 		SSLmode:  cfg.Postgres.SSLMode,
 	}
 
-	pg, err := postgres.NewPostgres(dbOptions).Connect()
+	pg, err := postgres.NewPostgres(
+		dbOptions,
+		cfg.Postgres.ConnAttempts,
+		time.Duration(cfg.Postgres.ConnTimeout)*time.Second,
+	).Connect()
 
 	if err != nil {
-		logger.Fatalf("postgres connection failed, %s", err.Error())
+		logger.Errorf("postgres connection failed, %s", err.Error())
 	}
+
 	defer pg.Close()
 
 	// Scheme migrate
@@ -49,9 +56,9 @@ func main() {
 	)
 
 	// Layers
-	rep := payment.NewPaymentRepository(pg)
-	usc := payment.NewPaymentUseCase(rep)
-	con := payment.NewPaymentController(
+	repo := repository.NewPaymentRepository(pg)
+	usc := usecase.NewPaymentUseCase(repo)
+	con := controller.NewPaymentController(
 		logger,
 		usc,
 	)
@@ -62,9 +69,9 @@ func main() {
 	httpServer := server.NewHttpServer(
 		con.Register(router),
 		cfg.HTTP.Port,
-		time.Duration(cfg.HTTP.ReadTimeout),
-		time.Duration(cfg.HTTP.WriteTimeout),
-		time.Duration(cfg.HTTP.ShutdownTimeout),
+		time.Duration(cfg.HTTP.ReadTimeout)*time.Second,
+		time.Duration(cfg.HTTP.WriteTimeout)*time.Second,
+		time.Duration(cfg.HTTP.ShutdownTimeout)*time.Second,
 	)
 
 	logger.Infof("http server created and started at http://localhost:%s", cfg.HTTP.Port)

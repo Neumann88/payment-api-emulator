@@ -1,24 +1,26 @@
-package payment
+package repository
 
 import (
 	"context"
 	"database/sql"
 	"fmt"
+
+	"github.com/Neumann88/payment-api-emulator/internal/entity"
 )
 
 const payments = "payments"
 
-type repository struct {
+type paymentRepository struct {
 	db *sql.DB
 }
 
-func NewPaymentRepository(db *sql.DB) *repository {
-	return &repository{
+func NewPaymentRepository(db *sql.DB) *paymentRepository {
+	return &paymentRepository{
 		db: db,
 	}
 }
 
-func (r *repository) createPayment(ctx context.Context, input paymentInput) (int64, error) {
+func (r *paymentRepository) CreatePayment(ctx context.Context, input entity.PaymentInput) (int64, error) {
 	const format = `INSERT INTO %s (user_id, user_email, amount, currency)
 						VALUES ($1, $2, $3, $4)
 					RETURNING id`
@@ -53,7 +55,7 @@ func (r *repository) createPayment(ctx context.Context, input paymentInput) (int
 	return id, nil
 }
 
-func (r *repository) updateStatus(ctx context.Context, input paymentStatus) (int64, error) {
+func (r *paymentRepository) UpdateStatus(ctx context.Context, input entity.PaymentStatus) (int64, error) {
 	const format = `UPDATE %s SET status = $1
 						WHERE id = $2
 						AND status NOT IN ($3, $4)`
@@ -68,8 +70,8 @@ func (r *repository) updateStatus(ctx context.Context, input paymentStatus) (int
 		query,
 		input.Status,
 		input.ID,
-		statusSuccess,
-		statusFailure,
+		entity.StatusSuccess,
+		entity.StatusFailure,
 	)
 
 	if err != nil {
@@ -79,7 +81,7 @@ func (r *repository) updateStatus(ctx context.Context, input paymentStatus) (int
 	return rows.RowsAffected()
 }
 
-func (r *repository) getStatus(ctx context.Context, paymentID int64) (string, error) {
+func (r *paymentRepository) GetStatus(ctx context.Context, paymentID int64) (string, error) {
 	const format = `SELECT status from %s
 						WHERE id = $1`
 
@@ -106,7 +108,7 @@ func (r *repository) getStatus(ctx context.Context, paymentID int64) (string, er
 	return status, nil
 }
 
-func (r *repository) getPayments(ctx context.Context, input paymentUser) ([]payment, error) {
+func (r *paymentRepository) GetPayments(ctx context.Context, input entity.PaymentUser) ([]entity.Payment, error) {
 	var arg string
 	var value interface{}
 
@@ -145,14 +147,14 @@ func (r *repository) getPayments(ctx context.Context, input paymentUser) ([]paym
 	)
 
 	if err != nil {
-		return []payment{}, fmt.Errorf("payment-reposiroty-getPayments, %s", err.Error())
+		return []entity.Payment{}, fmt.Errorf("payment-reposiroty-getPayments, %s", err.Error())
 	}
 
 	defer rows.Close()
 
-	output := make([]payment, 0)
+	output := make([]entity.Payment, 0)
 	for rows.Next() {
-		value := payment{}
+		value := entity.Payment{}
 
 		err := rows.Scan(
 			&value.ID,
@@ -167,23 +169,23 @@ func (r *repository) getPayments(ctx context.Context, input paymentUser) ([]paym
 
 		if err != nil {
 			if err == sql.ErrNoRows {
-				return []payment{}, fmt.Errorf("payment-repository-createPayment, %s", "no result")
+				return []entity.Payment{}, fmt.Errorf("payment-repository-createPayment, %s", "no result")
 			}
 
-			return []payment{}, fmt.Errorf("payment-reposiroty-getPayments, %s", err.Error())
+			return []entity.Payment{}, fmt.Errorf("payment-reposiroty-getPayments, %s", err.Error())
 		}
 
 		output = append(output, value)
 	}
 
 	if err := rows.Err(); err != nil {
-		return []payment{}, fmt.Errorf("payment-reposiroty-getPayments, %s", err.Error())
+		return []entity.Payment{}, fmt.Errorf("payment-reposiroty-getPayments, %s", err.Error())
 	}
 
 	return output, nil
 }
 
-func (r *repository) cancelPayment(ctx context.Context, paymentID int64) (int64, error) {
+func (r *paymentRepository) CancelPayment(ctx context.Context, paymentID int64) (int64, error) {
 	const format = `UPDATE %s SET status = $1
 						WHERE id = $2
 						AND status NOT IN ($3, $4)`
@@ -196,10 +198,10 @@ func (r *repository) cancelPayment(ctx context.Context, paymentID int64) (int64,
 	rows, err := r.db.ExecContext(
 		ctx,
 		query,
-		statusCanceled,
+		entity.StatusCanceled,
 		paymentID,
-		statusSuccess,
-		statusFailure,
+		entity.StatusSuccess,
+		entity.StatusFailure,
 	)
 
 	if err != nil {

@@ -16,14 +16,14 @@ func NewHttpServer(handler http.Handler, port string, readTimeout, writeTimeout,
 	httpServer := &http.Server{
 		Addr:         ":" + port,
 		Handler:      handler,
-		ReadTimeout:  readTimeout * time.Second,
-		WriteTimeout: writeTimeout * time.Second,
+		ReadTimeout:  readTimeout,
+		WriteTimeout: writeTimeout,
 	}
 
 	serv := &server{
 		server:          httpServer,
 		notify:          make(chan error, 1),
-		shutdownTimeout: shutdownTime * time.Second,
+		shutdownTimeout: shutdownTime,
 	}
 
 	serv.start()
