@@ -5,15 +5,15 @@ import (
 	"errors"
 	"sync"
 
-	"github.com/Neumann88/payment-api-emulator/internal/contracts"
+	"github.com/Neumann88/payment-api-emulator/internal/contract"
 	"github.com/Neumann88/payment-api-emulator/internal/entity"
 )
 
 type PaymentUseCase struct {
-	repo contracts.PaymentRepository
+	repo contract.PaymentRepository
 }
 
-func NewPaymentUseCase(repo contracts.PaymentRepository) *PaymentUseCase {
+func NewPaymentUseCase(repo contract.PaymentRepository) *PaymentUseCase {
 	return &PaymentUseCase{
 		repo: repo,
 	}

@@ -6,18 +6,18 @@ import (
 
 	"github.com/gorilla/mux"
 
-	"github.com/Neumann88/payment-api-emulator/internal/contracts"
+	"github.com/Neumann88/payment-api-emulator/internal/contract"
 	"github.com/Neumann88/payment-api-emulator/internal/entity"
 	"github.com/Neumann88/payment-api-emulator/pkg/loggin"
-	"github.com/Neumann88/payment-api-emulator/pkg/utils"
+	"github.com/Neumann88/payment-api-emulator/pkg/util"
 )
 
 type PaymentController struct {
-	usecase contracts.PaymentUseCase
+	usecase contract.PaymentUseCase
 	logger  loggin.ILogger
 }
 
-func NewPaymentController(l loggin.ILogger, u contracts.PaymentUseCase) *PaymentController {
+func NewPaymentController(l loggin.ILogger, u contract.PaymentUseCase) *PaymentController {
 	return &PaymentController{
 		logger:  l,
 		usecase: u,
@@ -48,13 +48,13 @@ func (c *PaymentController) createPayment(w http.ResponseWriter, r *http.Request
 	var input entity.PaymentInput
 
 	if err := json.NewDecoder(r.Body).Decode(&input); err != nil {
-		http.Error(w, utils.InvalidBodyData, http.StatusBadRequest)
+		http.Error(w, util.InvalidBodyData, http.StatusBadRequest)
 
 		return
 	}
 
-	if ok := utils.IsEmail(input.UserEmail); !ok {
-		http.Error(w, utils.InvalidBodyEmail, http.StatusBadRequest)
+	if ok := util.IsEmail(input.UserEmail); !ok {
+		http.Error(w, util.InvalidBodyEmail, http.StatusBadRequest)
 
 		return
 	}
@@ -66,7 +66,7 @@ func (c *PaymentController) createPayment(w http.ResponseWriter, r *http.Request
 
 	if err != nil {
 		c.logger.Error(err)
-		http.Error(w, utils.InternalServerError, http.StatusInternalServerError)
+		http.Error(w, util.InternalServerError, http.StatusInternalServerError)
 
 		return
 	}
@@ -82,24 +82,24 @@ func (c *PaymentController) createPayment(w http.ResponseWriter, r *http.Request
 
 	if err != nil {
 		c.logger.Error(err)
-		http.Error(w, utils.InternalServerError, http.StatusInternalServerError)
+		http.Error(w, util.InternalServerError, http.StatusInternalServerError)
 
 		return
 	}
 }
 
 func (c *PaymentController) updateStatus(w http.ResponseWriter, r *http.Request) {
-	paymentID, err := utils.GetQueryID(r)
+	paymentID, err := util.GetQueryID(r)
 
 	if err != nil {
-		http.Error(w, utils.InvalidQueryID, http.StatusBadRequest)
+		http.Error(w, util.InvalidQueryID, http.StatusBadRequest)
 
 		return
 	}
 
 	var input entity.PaymentStatus
 	if err = json.NewDecoder(r.Body).Decode(&input); err != nil {
-		http.Error(w, utils.InvalidBodyData, http.StatusBadRequest)
+		http.Error(w, util.InvalidBodyData, http.StatusBadRequest)
 
 		return
 	}
@@ -113,7 +113,7 @@ func (c *PaymentController) updateStatus(w http.ResponseWriter, r *http.Request)
 
 	if err != nil {
 		c.logger.Error(err)
-		http.Error(w, utils.InternalServerError, http.StatusInternalServerError)
+		http.Error(w, util.InternalServerError, http.StatusInternalServerError)
 
 		return
 	}
@@ -122,10 +122,10 @@ func (c *PaymentController) updateStatus(w http.ResponseWriter, r *http.Request)
 }
 
 func (c *PaymentController) getStatus(w http.ResponseWriter, r *http.Request) {
-	paymentID, err := utils.GetQueryID(r)
+	paymentID, err := util.GetQueryID(r)
 
 	if err != nil {
-		http.Error(w, utils.InvalidQueryID, http.StatusBadRequest)
+		http.Error(w, util.InvalidQueryID, http.StatusBadRequest)
 
 		return
 	}
@@ -137,7 +137,7 @@ func (c *PaymentController) getStatus(w http.ResponseWriter, r *http.Request) {
 
 	if err != nil {
 		c.logger.Error(err)
-		http.Error(w, utils.InternalServerError, http.StatusInternalServerError)
+		http.Error(w, util.InternalServerError, http.StatusInternalServerError)
 
 		return
 	}
@@ -153,7 +153,7 @@ func (c *PaymentController) getStatus(w http.ResponseWriter, r *http.Request) {
 
 	if err != nil {
 		c.logger.Error(err)
-		http.Error(w, utils.InternalServerError, http.StatusInternalServerError)
+		http.Error(w, util.InternalServerError, http.StatusInternalServerError)
 
 		return
 	}
@@ -162,8 +162,8 @@ func (c *PaymentController) getStatus(w http.ResponseWriter, r *http.Request) {
 func (c *PaymentController) getPaymentsByUserEmail(w http.ResponseWriter, r *http.Request) {
 	userEmail := r.URL.Query().Get("email")
 
-	if ok := utils.IsEmail(userEmail); !ok {
-		http.Error(w, utils.InvalidQueryEmail, http.StatusBadRequest)
+	if ok := util.IsEmail(userEmail); !ok {
+		http.Error(w, util.InvalidQueryEmail, http.StatusBadRequest)
 
 		return
 	}
@@ -177,7 +177,7 @@ func (c *PaymentController) getPaymentsByUserEmail(w http.ResponseWriter, r *htt
 
 	if err != nil {
 		c.logger.Error(err)
-		http.Error(w, utils.InternalServerError, http.StatusInternalServerError)
+		http.Error(w, util.InternalServerError, http.StatusInternalServerError)
 
 		return
 	}
@@ -193,17 +193,17 @@ func (c *PaymentController) getPaymentsByUserEmail(w http.ResponseWriter, r *htt
 
 	if err != nil {
 		c.logger.Error(err)
-		http.Error(w, utils.InternalServerError, http.StatusInternalServerError)
+		http.Error(w, util.InternalServerError, http.StatusInternalServerError)
 
 		return
 	}
 }
 
 func (c *PaymentController) getPaymentsByUserID(w http.ResponseWriter, r *http.Request) {
-	userID, err := utils.GetQueryID(r)
+	userID, err := util.GetQueryID(r)
 
 	if err != nil {
-		http.Error(w, utils.InvalidQueryID, http.StatusBadRequest)
+		http.Error(w, util.InvalidQueryID, http.StatusBadRequest)
 
 		return
 	}
@@ -217,7 +217,7 @@ func (c *PaymentController) getPaymentsByUserID(w http.ResponseWriter, r *http.R
 
 	if err != nil {
 		c.logger.Error(err)
-		http.Error(w, utils.InternalServerError, http.StatusInternalServerError)
+		http.Error(w, util.InternalServerError, http.StatusInternalServerError)
 
 		return
 	}
@@ -233,17 +233,17 @@ func (c *PaymentController) getPaymentsByUserID(w http.ResponseWriter, r *http.R
 
 	if err != nil {
 		c.logger.Error(err)
-		http.Error(w, utils.InternalServerError, http.StatusInternalServerError)
+		http.Error(w, util.InternalServerError, http.StatusInternalServerError)
 
 		return
 	}
 }
 
 func (c *PaymentController) cancelPayment(w http.ResponseWriter, r *http.Request) {
-	paymentID, err := utils.GetQueryID(r)
+	paymentID, err := util.GetQueryID(r)
 
 	if err != nil {
-		http.Error(w, utils.InvalidQueryID, http.StatusBadRequest)
+		http.Error(w, util.InvalidQueryID, http.StatusBadRequest)
 
 		return
 	}
@@ -255,7 +255,7 @@ func (c *PaymentController) cancelPayment(w http.ResponseWriter, r *http.Request
 
 	if err != nil {
 		c.logger.Error(err)
-		http.Error(w, utils.InternalServerError, http.StatusInternalServerError)
+		http.Error(w, util.InternalServerError, http.StatusInternalServerError)
 
 		return
 	}
