@@ -3,6 +3,7 @@ package repository
 import (
 	"context"
 	"database/sql"
+	"errors"
 	"fmt"
 
 	"github.com/Neumann88/payment-api-emulator/internal/entity"
@@ -40,16 +41,16 @@ func (r *PaymentRepository) CreatePayment(ctx context.Context, input entity.Paym
 	)
 
 	if err := row.Err(); err != nil {
-		return 0, fmt.Errorf("payment-repository-createPayment, %s", err.Error())
+		return 0, fmt.Errorf("payment-repository-createPayment, %w", err)
 	}
 
 	var id int64
 	if err := row.Scan(&id); err != nil {
-		if err == sql.ErrNoRows {
-			return 0, fmt.Errorf("payment-repository-createPayment, %s", "no result")
+		if errors.Is(err, sql.ErrNoRows) {
+			return 0, errors.New("payment-repository-createPayment, no result")
 		}
 
-		return 0, fmt.Errorf("payment-repository-createPayment, %s", err.Error())
+		return 0, fmt.Errorf("payment-repository-createPayment, %w", err)
 	}
 
 	return id, nil
@@ -75,7 +76,7 @@ func (r *PaymentRepository) UpdateStatus(ctx context.Context, input entity.Payme
 	)
 
 	if err != nil {
-		return 0, fmt.Errorf("payment-reposiroty-updateStatus, %s", err.Error())
+		return 0, fmt.Errorf("payment-reposiroty-updateStatus, %w", err)
 	}
 
 	return rows.RowsAffected()
@@ -98,11 +99,11 @@ func (r *PaymentRepository) GetStatus(ctx context.Context, paymentID int64) (str
 
 	var status string
 	if err := rows.Scan(&status); err != nil {
-		if err == sql.ErrNoRows {
-			return "", fmt.Errorf("payment-repository-createPayment, %s", "no result")
+		if errors.Is(err, sql.ErrNoRows) {
+			return "", errors.New("payment-repository-createPayment, no result")
 		}
 
-		return "", fmt.Errorf("payment-reposiroty-getStatus, %s", err.Error())
+		return "", fmt.Errorf("payment-reposiroty-getStatus, %w", err)
 	}
 
 	return status, nil
@@ -147,7 +148,7 @@ func (r *PaymentRepository) GetPayments(ctx context.Context, input entity.Paymen
 	)
 
 	if err != nil {
-		return []entity.Payment{}, fmt.Errorf("payment-reposiroty-getPayments, %s", err.Error())
+		return []entity.Payment{}, fmt.Errorf("payment-reposiroty-getPayments, %w", err)
 	}
 
 	defer rows.Close()
@@ -168,18 +169,18 @@ func (r *PaymentRepository) GetPayments(ctx context.Context, input entity.Paymen
 		)
 
 		if err != nil {
-			if err == sql.ErrNoRows {
-				return []entity.Payment{}, fmt.Errorf("payment-repository-createPayment, %s", "no result")
+			if errors.Is(err, sql.ErrNoRows) {
+				return []entity.Payment{}, errors.New("payment-repository-createPayment, no result")
 			}
 
-			return []entity.Payment{}, fmt.Errorf("payment-reposiroty-getPayments, %s", err.Error())
+			return []entity.Payment{}, fmt.Errorf("payment-reposiroty-getPayments, %w", err)
 		}
 
 		output = append(output, value)
 	}
 
 	if err := rows.Err(); err != nil {
-		return []entity.Payment{}, fmt.Errorf("payment-reposiroty-getPayments, %s", err.Error())
+		return []entity.Payment{}, fmt.Errorf("payment-reposiroty-getPayments, %w", err)
 	}
 
 	return output, nil
@@ -205,7 +206,7 @@ func (r *PaymentRepository) CancelPayment(ctx context.Context, paymentID int64) 
 	)
 
 	if err != nil {
-		return 0, fmt.Errorf("payment-repository-cancelPayment, %s", err.Error())
+		return 0, fmt.Errorf("payment-repository-cancelPayment, %w", err)
 	}
 
 	return rows.RowsAffected()

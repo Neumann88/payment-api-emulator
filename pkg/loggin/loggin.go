@@ -41,11 +41,13 @@ func InitZap(debug bool) ILogger {
 	encoderConsole := zapcore.NewConsoleEncoder(config)
 
 	err := os.MkdirAll("logs", 0755)
+
 	if err != nil {
 		log.Fatalln(err.Error())
 	}
 
 	logFile, err := os.OpenFile("logs/all.log", os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0755)
+
 	if err != nil {
 		log.Fatalln(err.Error())
 	}

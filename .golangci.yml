@@ -1,3 +1,105 @@
+linters-settings:
+  dupl:
+    threshold: 100
+  errorlint:
+    errorf: true
+  errcheck:
+    check-type-assertions: true
+    check-blank: true
+  exhaustive:
+    check-generated: false
+    default-signifies-exhaustive: false
+    govet:
+      check-shadowing: true
+    goconst:
+      min-len: 2
+      min-occurrences: 2
+  # gocritic:
+  #   enabled-tags:
+  #     - diagnostic
+  #     - experimental
+  #     - opinionated
+  #     - performance
+  #     - style
+    disabled-checks:
+      - dupImport
+      - unnecessaryBlock
+  # gofumpt:
+  #   extra-rules: true
+  # gomnd:
+  #   settings:
+  #     mnd:
+  #       checks:
+  #         - argument
+  #         - case
+  #         - condition
+  #         - operation
+  #         - return
+  misspell:
+    locale: US
+  nolintlint:
+    require-explanation: true
+    require-specific: true
+
+linters:
+  disable-all: true
+  enable:
+    - asciicheck
+    - cyclop
+    - deadcode
+    - depguard
+    - dogsled
+    - dupl
+    - durationcheck
+    - errcheck
+    - errorlint
+    - exhaustive
+    - exportloopref
+    - forbidigo
+    - gochecknoglobals
+    - gochecknoinits
+    - gocognit
+    - goconst
+    # - gocritics
+    - gocyclo
+    # - godot
+    # - godox
+    - gofmt
+    # - gofumpt
+    - goimports
+    # - gomnd
+    - gomodguard
+    - goprintffuncname
+    - gosec
+    - gosimple
+    - govet
+    - ineffassign
+    - makezero
+    - misspell
+    - nakedret
+    - nestif
+    - nlreturn
+    - nolintlint
+    - paralleltest
+    - predeclared
+    - revive
+    - staticcheck
+    - stylecheck
+    - thelper
+    - typecheck
+    - unconvert
+    - unused
+    - varcheck
+    - whitespace
+
+# disable:
+#    - exhaustivestruct
+#    - ifshort
+#    - goheader
+#    - prealloc
+#    - testpackage
+#    - wrapcheck
+
 run:
   deadline: 10m
   issues-exit-code: 1
@@ -8,33 +110,5 @@ run:
     - var
     - tmp
     - internal/generated
-
-linters-settings:
-  govet:
-    check-shadowing: true
-  golint:
-    min-confidence: 0
-  dupl:
-    threshold: 100
-  goconst:
-    min-len: 2
-    min-occurrences: 2
-
-linters:
-  disable-all: true
-  enable:
-    - golint
-    - govet
-    - errcheck
-    - deadcode
-    - structcheck
-    - varcheck
-    - ineffassign
-    - typecheck
-    - goconst
-    - gosec
-    - goimports
-    - gosimple
-    - unused
-    - staticcheck # enable before push
-    # - dupl # - it's very slow, enable if you really know why you need it
+  skip-files:
+    - ".*\\_test\\.go$"

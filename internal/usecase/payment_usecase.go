@@ -30,7 +30,7 @@ func (u *PaymentUseCase) CreatePayment(ctx context.Context, input entity.Payment
 
 		wg.Add(1)
 		go func() {
-			_ = u.UpdateStatus(
+			err = u.UpdateStatus(
 				ctx,
 				entity.PaymentStatus{
 					ID:     paymentID,
@@ -57,6 +57,7 @@ func (u *PaymentUseCase) UpdateStatus(ctx context.Context, input entity.PaymentS
 	if err != nil {
 		return err
 	}
+
 	if row == 0 {
 		return errors.New("payment-usecase-updateStatus, terminal status")
 	}

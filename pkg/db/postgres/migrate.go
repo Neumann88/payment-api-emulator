@@ -13,7 +13,7 @@ import (
 func InitMigrate(logger loggin.ILogger, options DBOptions) {
 	dsn := getDSN(options)
 
-	if len(dsn) == 0 {
+	if dsn == "" {
 		logger.Fatal("migrate: environment variable not declared")
 	}
 
