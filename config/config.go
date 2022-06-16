@@ -36,11 +36,13 @@ func NewConfig() (*Config, error) {
 	cfg := &Config{}
 
 	err := cleanenv.ReadConfig("config/development.yml", cfg)
+
 	if err != nil {
 		return nil, err
 	}
 
 	err = cleanenv.ReadEnv(cfg)
+
 	if err != nil {
 		return nil, err
 	}

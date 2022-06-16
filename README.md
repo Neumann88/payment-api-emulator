@@ -3,7 +3,8 @@
 ## Организация структуры кода
     1. https://github.com/golang-standards/project-layout
     2. https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html
-    3. https://habr.com/ru/post/561240
+    3. https://habr.com/ru/post/181772/
+    4. https://github.com/evrone/go-clean-template
 
 ## Что нужно для запуска проекта
     1. Docker

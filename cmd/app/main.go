@@ -10,9 +10,11 @@ import (
 	"github.com/gorilla/mux"
 
 	"github.com/Neumann88/payment-api-emulator/config"
+
 	"github.com/Neumann88/payment-api-emulator/internal/controller"
 	"github.com/Neumann88/payment-api-emulator/internal/repository"
 	"github.com/Neumann88/payment-api-emulator/internal/usecase"
+
 	"github.com/Neumann88/payment-api-emulator/pkg/db/postgres"
 	"github.com/Neumann88/payment-api-emulator/pkg/http/server"
 	"github.com/Neumann88/payment-api-emulator/pkg/loggin"
@@ -21,6 +23,7 @@ import (
 func main() {
 	// Config
 	cfg, err := config.NewConfig()
+
 	if err != nil {
 		log.Fatalf("config initialization error: %s", err.Error())
 	}
@@ -38,14 +41,16 @@ func main() {
 		SSLmode:  cfg.Postgres.SSLMode,
 	}
 
-	pg, err := postgres.NewPostgres(
+	db := postgres.NewPostgres(
 		dbOptions,
 		cfg.Postgres.ConnAttempts,
 		time.Duration(cfg.Postgres.ConnTimeout)*time.Second,
-	).Connect()
+	)
+
+	pg, err := db.Connect()
 
 	if err != nil {
-		logger.Errorf("postgres connection failed, %s", err.Error())
+		logger.Fatalf("postgres connection failed, %s", err.Error())
 	}
 
 	defer pg.Close()
