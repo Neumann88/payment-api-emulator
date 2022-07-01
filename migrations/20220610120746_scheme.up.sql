@@ -17,7 +17,7 @@ CREATE TABLE IF NOT EXISTS payments (
     user_id INT NOT NULL,
     user_email VARCHAR(20) NOT NULL,
     currency valid_currency NOT NULL,
-    amount DECIMAL(12, 2) NOT NULL CHECK(amount > 0) DEFAULT 0,
+    amount DECIMAL(12, 2) NOT NULL CHECK(amount > 0) DEFAULT 0, -- не стоит хранить деньги/баланс итп в float из за неточности
     created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
     status valid_status NOT NULL DEFAULT 'new'
