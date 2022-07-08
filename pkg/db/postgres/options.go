@@ -1,6 +1,9 @@
 package postgres
 
-import "fmt"
+import (
+	"fmt"
+	"os"
+)
 
 type DBOptions struct {
 	User     string
