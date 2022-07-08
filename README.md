@@ -16,14 +16,14 @@
 ## .env - показательный, в реальном проекте данный файл должен находится в .gitignore
 
 ## API
-    1. "/payment", Method: POST - создает транзакцию, request body params: {"user_id": type int, "amount": type decimal, "user_email": type varchar, "currency": type varchar}
+    1. "https://neumann-payment-api.herokuapp.com/payment", Method: POST - создает транзакцию, request body params: {"user_id": type int, "amount": type decimal, "user_email": type varchar, "currency": type varchar}
 
-    2. "/payments/{id}/status", Method: PUT - обновляет статус транзакции по ее id (из за абстрактно написанного задания - перенес выбор статуса с сервиса на клиент (клиент отдает статусы - "УСПЕХ", "НЕУСПЕХ"), так же не понятно с применением к запросу "авторизации" - если речь идет о защите эндпоинта по авторизованному юзеру (брать из заголовка токен и сверять его через сервис авторизации по логике), то почему только одного???), request body params: {"status": enum valid_status}
+    2. "https://neumann-payment-api.herokuapp.com/payments/{id}/status", Method: PUT - обновляет статус транзакции по ее id (из за абстрактно написанного задания - перенес выбор статуса с сервиса на клиент (клиент отдает статусы - "УСПЕХ", "НЕУСПЕХ"), так же не понятно с применением к запросу "авторизации" - если речь идет о защите эндпоинта по авторизованному юзеру (брать из заголовка токен и сверять его через сервис авторизации по логике), то почему только одного???), request body params: {"status": enum valid_status}
 
-    3. "/payments/{id}/status", Method: GET - возвращает статус транзакции по ее id
+    3. "https://neumann-payment-api.herokuapp.com/payments/{id}/status", Method: GET - возвращает статус транзакции по ее id
 
-    4. "/payments/user/{id}", Method: GET - возвращает транзакции пользователя по его id
+    4. "https://neumann-payment-api.herokuapp.com/payments/user/{id}", Method: GET - возвращает транзакции пользователя по его id
 
-    5. "/payments/user?email=...", Method: GET - возвращает транзакции пользователя по его email
+    5. "https://neumann-payment-api.herokuapp.com/payments/user?email=...", Method: GET - возвращает транзакции пользователя по его email
 
-    5. "/payments/{id}", Method: PUT - отменяет транзакцию транзакцию по ее id
+    5. "https://neumann-payment-api.herokuapp.com/payments/{id}", Method: PUT - отменяет транзакцию транзакцию по ее id
