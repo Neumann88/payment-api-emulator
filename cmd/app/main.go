@@ -69,12 +69,16 @@ func main() {
 		usc,
 	)
 
+	port := os.Getenv("PORT")
+	if port == "" {
+	  port = cfg.HTTP.Port
+	}
 	// HTTP-Server
 	router := mux.NewRouter()
 
 	httpServer := server.NewHTTPServer(
 		con.Register(router),
-		cfg.HTTP.Port,
+		port,
 		time.Duration(cfg.HTTP.ReadTimeout)*time.Second,
 		time.Duration(cfg.HTTP.WriteTimeout)*time.Second,
 		time.Duration(cfg.HTTP.ShutdownTimeout)*time.Second,
