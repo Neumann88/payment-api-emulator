@@ -12,17 +12,22 @@ type DBOptions struct {
 }
 
 func getDSN(options DBOptions) string {
-	const format = "postgres://%s:%s@%s:%s/%s?sslmode=%s"
+	dbURL := os.Getenv("DATABASE_URL")
+	if dbURL == "" {
+		const format = "postgres://%s:%s@%s:%s/%s?sslmode=%s"
 
-	dsn := fmt.Sprintf(
-		format,
-		options.User,
-		options.Password,
-		options.Host,
-		options.Port,
-		options.DB,
-		options.SSLmode,
-	)
+		dsn := fmt.Sprintf(
+			format,
+			options.User,
+			options.Password,
+			options.Host,
+			options.Port,
+			options.DB,
+			options.SSLmode,
+		)
+		
+		return dsn
+	}
 
-	return dsn
+	return dbURL
 }
