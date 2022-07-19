@@ -25,7 +25,7 @@ func NewPaymentController(l loggin.ILogger, u contract.PaymentUseCase) *PaymentC
 }
 
 const (
-	createPayment          = "/payment"
+	createPayment          = "/payments"
 	updateStatusByID       = "/payments/{id}/status"
 	getStatusByID          = "/payments/{id}/status"
 	getPaymentsByUserEmail = "/payments/user" // query /payments/user?email=email
